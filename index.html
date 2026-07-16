@@ -48,9 +48,9 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .topbar-ci{font-size:10px;opacity:.75}
 .topbar-lang{display:flex;gap:3px}
 .topbar-lang button{padding:2px 7px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:11px;font-weight:600}
-.topbar-lang button.active{background:rgba(255,255,255,.25);color:#fff}
+.topbar-lang button.active{background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,.6)}
 
-.content{flex:1;padding:20px;max-width:1100px;width:100%}
+.content{flex:1;padding:20px;width:100%;max-width:860px}
 
 /* Screens */
 .screen{display:none}
@@ -89,6 +89,10 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
   .sidebar-logo{padding:14px;text-align:center}
   .sidebar-logo h1{flex-direction:column;font-size:10px;gap:3px}
   .snav-btn{justify-content:center;padding:12px 0}
+  .content{max-width:100%;padding:16px}
+}
+@media(min-width:1025px){
+  .content{padding:24px 32px}
 }
 
 /* CARDS */
@@ -290,8 +294,8 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
       <div class="topbar-pts" id="tPts">⭐ 45 pts</div>
       <div class="topbar-ci" id="tCI">Not checked in</div>
       <div class="topbar-lang">
-        <button class="active" data-lang="en2">JP</button>
-        <button data-lang="en2b">EN</button>
+        <button data-lang="ja" id="topJP">JP</button>
+        <button data-lang="en" id="topEN">EN</button>
       </div>
     </div>
   </div>
@@ -802,12 +806,15 @@ function applyI18n(){
     fc.innerHTML=I18N[lang].chips.map(c=>`<span class="chip" data-q="${c.q}">${c.l}</span>`).join("");
     fc.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{document.getElementById("recQ").value=c.dataset.q; runRec();}));
   }
-  // lang button states
-  document.querySelectorAll("[data-lang]").forEach(b=>{
-    b.classList.toggle("active", b.dataset.lang==="ja"? lang==="ja" : b.dataset.lang==="en"? lang==="en" : false);
+  // lang button states — 全ての言語ボタンを一括更新
+  document.querySelectorAll(".lang-btn,[data-lang],.mobile-lang button").forEach(b=>{
+    const dl=b.dataset.lang;
+    if(dl==="ja"||dl==="en") b.classList.toggle("active", dl===lang);
   });
   document.getElementById("mlJP").classList.toggle("active",lang==="ja");
   document.getElementById("mlEN").classList.toggle("active",lang==="en");
+  if(document.getElementById("topJP")) document.getElementById("topJP").classList.toggle("active",lang==="ja");
+  if(document.getElementById("topEN")) document.getElementById("topEN").classList.toggle("active",lang==="en");
   renderHome(); renderMap();
 }
 function setLang(l){ lang=l; applyI18n(); }
@@ -1306,12 +1313,9 @@ document.querySelectorAll(".snav-btn,.bnav-btn").forEach(b=>{
   b.addEventListener("click",()=>switchScreen(b.dataset.sc));
 });
 
-// lang buttons — sidebar + topbar + mobile
+// lang buttons — 全部まとめてイベント登録
 document.querySelectorAll("[data-lang]").forEach(b=>{
-  b.addEventListener("click",()=>{
-    const l=b.dataset.lang;
-    if(l==="ja"||l==="en") setLang(l);
-  });
+  b.addEventListener("click",()=>{ const l=b.dataset.lang; if(l==="ja"||l==="en") setLang(l); });
 });
 document.getElementById("mlJP").addEventListener("click",()=>setLang("ja"));
 document.getElementById("mlEN").addEventListener("click",()=>setLang("en"));
