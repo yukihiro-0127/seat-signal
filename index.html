@@ -823,59 +823,78 @@ function setLang(l){ lang=l; applyI18n(); }
 //  DATA
 // ═══════════════════════════════════════
 const FLOORS=[
-  {id:"17F",theme:"Reception & Lounge",areas:[
-    {id:"17a",name:"Reception Lounge",  st:"moderate",  pct:52, upd:"6",conf:"medium",tags:["Short stay","Power outlet"],reports:4},
-    {id:"17b",name:"South Meeting Row", st:"busy",      pct:22, upd:"4",conf:"high",  tags:["Team-friendly"],             reports:6},
-    {id:"17c",name:"Open Collab",       st:"available", pct:70, upd:"2",conf:"high",  tags:["Team-friendly","Power outlet"],reports:5},
-    {id:"17d",name:"Phone Booths",      st:"available", pct:80, upd:"1",conf:"high",  tags:["Phone booth","Quiet"],        reports:3},
+  // 17F: Support/Reception フロア（画像より）
+  {id:"17F",theme:"Support & Reception",areas:[
+    {id:"17a",name:"Support / Concierge", st:"moderate",  pct:55, upd:"6", conf:"medium",tags:["Short stay","Power outlet"],reports:4},
+    {id:"17b",name:"Consulting Mail",     st:"available", pct:72, upd:"3", conf:"high",  tags:["Quiet","Monitor"],           reports:3},
+    {id:"17c",name:"Cafe / Lounge",       st:"available", pct:80, upd:"2", conf:"high",  tags:["Short stay","Team-friendly"],reports:5},
+    {id:"17d",name:"Event Space",         st:"busy",      pct:20, upd:"4", conf:"high",  tags:["Team-friendly"],             reports:6},
+    {id:"17e",name:"Classroom",           st:"moderate",  pct:45, upd:"8", conf:"medium",tags:["Team-friendly","Monitor"],   reports:3},
+    {id:"17f",name:"Meeting Rooms",       st:"busy",      pct:18, upd:"5", conf:"high",  tags:["Team-friendly"],             reports:5},
+    {id:"17g",name:"Wellness / Massage",  st:"available", pct:90, upd:"1", conf:"high",  tags:["Quiet","Short stay"],        reports:2},
   ]},
-  {id:"18F",theme:"Operations",areas:[
-    {id:"18a",name:"East Wing",         st:"available", pct:75, upd:"3",conf:"high",  tags:["Monitor","Power outlet"],     reports:7},
-    {id:"18b",name:"West Wing",         st:"moderate",  pct:45, upd:"8",conf:"medium",tags:["Monitor","Team-friendly"],   reports:3},
-    {id:"18c",name:"Central Hub",       st:"busy",      pct:28, upd:"5",conf:"high",  tags:["Standing desk","Short stay"],reports:5},
-    {id:"18d",name:"Quiet Corner",      st:"available", pct:85, upd:"2",conf:"high",  tags:["Quiet","Power outlet"],      reports:4},
+  // 18F: High Security フロア（画像より）
+  {id:"18F",theme:"High Security",areas:[
+    {id:"18a",name:"High Security Area",  st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
+    {id:"18b",name:"Secure Project A",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+    {id:"18c",name:"Document Support",    st:"moderate",  pct:50, upd:"10",conf:"medium",tags:["Short stay"],                reports:2},
+    {id:"18d",name:"Secure Project B",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
-  {id:"19F",theme:"Engineering A",areas:[
-    {id:"19a",name:"Dev Zone North",    st:"busy",      pct:30, upd:"7",conf:"high",  tags:["Monitor","Power outlet"],    reports:8},
-    {id:"19b",name:"Dev Zone South",    st:"moderate",  pct:48, upd:"11",conf:"medium",tags:["Monitor"],                 reports:3},
-    {id:"19c",name:"Scrum Area",        st:"almostfull",pct:8,  upd:"3",conf:"high",  tags:["Team-friendly"],            reports:6},
-    {id:"19d",name:"Lounge Sofa",       st:"available", pct:90, upd:"1",conf:"high",  tags:["Short stay","Quiet"],       reports:2},
+  // 19F: Work Zones（画像より: North/South Work Zone + Collab Pods + Focus/Web）
+  {id:"19F",theme:"Work Zones",areas:[
+    {id:"19a",name:"North Work Zone",     st:"busy",      pct:30, upd:"7", conf:"high",  tags:["Monitor","Power outlet"],    reports:8},
+    {id:"19b",name:"East Work Zone",      st:"available", pct:70, upd:"3", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
+    {id:"19c",name:"Collaboration Pods",  st:"moderate",  pct:48, upd:"9", conf:"medium",tags:["Team-friendly"],             reports:4},
+    {id:"19d",name:"South Work Zone",     st:"moderate",  pct:52, upd:"6", conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
+    {id:"19e",name:"Focus / Web",         st:"available", pct:78, upd:"2", conf:"high",  tags:["Quiet","Monitor"],           reports:3},
+    {id:"19f",name:"High Security",       st:"unknown",   pct:null,upd:"45",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
-  {id:"20F",theme:"Engineering B",areas:[
-    {id:"20a",name:"Pipeline Row",      st:"moderate",  pct:55, upd:"9",conf:"medium",tags:["Monitor","Standing desk"],  reports:4},
-    {id:"20b",name:"Focus Pods",        st:"available", pct:72, upd:"4",conf:"high",  tags:["Quiet","Monitor"],          reports:5},
-    {id:"20c",name:"Pair Programming",  st:"busy",      pct:25, upd:"6",conf:"high",  tags:["Team-friendly","Monitor"],  reports:7},
-    {id:"20d",name:"Refresh Corner",    st:"unknown",   pct:null,upd:"50",conf:"low", tags:["Short stay"],               reports:0},
+  // 20F: High Security（画像より: 18Fと同パターン）
+  {id:"20F",theme:"High Security",areas:[
+    {id:"20a",name:"High Security Area",  st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
+    {id:"20b",name:"Secure Project A",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+    {id:"20c",name:"Support Nook",        st:"available", pct:80, upd:"3", conf:"high",  tags:["Short stay","Power outlet"], reports:3},
+    {id:"20d",name:"Secure Project B",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
-  {id:"21F",theme:"Design & Strategy",areas:[
-    {id:"21a",name:"Focus Zone",        st:"available", pct:76, upd:"2",conf:"high",  tags:["Quiet","Monitor","Power outlet"],reports:6},
-    {id:"21b",name:"Creative Studio",   st:"moderate",  pct:50, upd:"13",conf:"medium",tags:["Team-friendly"],           reports:3},
-    {id:"21c",name:"South Terrace",     st:"available", pct:68, upd:"5",conf:"high",  tags:["Quiet","Power outlet"],     reports:4},
-    {id:"21d",name:"War Room",          st:"almostfull",pct:5,  upd:"2",conf:"high",  tags:["Team-friendly"],            reports:5},
+  // 21F: Work Zones（画像より: North/South Work Zone + Collab Areas + Focus Rooms）
+  {id:"21F",theme:"Work Zones",areas:[
+    {id:"21a",name:"North Work Zone",     st:"available", pct:76, upd:"2", conf:"high",  tags:["Monitor","Power outlet"],    reports:6},
+    {id:"21b",name:"East Work Zone",      st:"available", pct:68, upd:"5", conf:"high",  tags:["Monitor","Power outlet"],    reports:4},
+    {id:"21c",name:"Collaboration Areas", st:"moderate",  pct:50, upd:"13",conf:"medium",tags:["Team-friendly"],             reports:3},
+    {id:"21d",name:"South Work Zone",     st:"moderate",  pct:58, upd:"7", conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
+    {id:"21e",name:"Focus Rooms",         st:"available", pct:82, upd:"1", conf:"high",  tags:["Quiet","Monitor"],           reports:5},
   ]},
-  {id:"22F",theme:"Sales & BD",areas:[
-    {id:"22a",name:"North Open",        st:"moderate",  pct:42, upd:"10",conf:"medium",tags:["Monitor","Team-friendly"], reports:4},
-    {id:"22b",name:"South Window",      st:"available", pct:65, upd:"3",conf:"high",  tags:["Monitor","Power outlet"],   reports:5},
-    {id:"22c",name:"BD Lounge",         st:"busy",      pct:18, upd:"7",conf:"high",  tags:["Team-friendly","Short stay"],reports:6},
-    {id:"22d",name:"Silent Row",        st:"available", pct:82, upd:"1",conf:"high",  tags:["Quiet","Power outlet"],     reports:3},
+  // 22F: Work Zones（画像より: North/South + Collab + Focus + Restricted）
+  {id:"22F",theme:"Work Zones",areas:[
+    {id:"22a",name:"North Work Zone",     st:"moderate",  pct:42, upd:"10",conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
+    {id:"22b",name:"East Work Zone",      st:"available", pct:65, upd:"3", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
+    {id:"22c",name:"Collaboration Areas", st:"busy",      pct:22, upd:"7", conf:"high",  tags:["Team-friendly"],             reports:6},
+    {id:"22d",name:"South Work Zone",     st:"moderate",  pct:48, upd:"8", conf:"medium",tags:["Monitor","Power outlet"],    reports:3},
+    {id:"22e",name:"Focus Rooms",         st:"available", pct:85, upd:"2", conf:"high",  tags:["Quiet","Monitor"],           reports:4},
+    {id:"22f",name:"Restricted / Dept",   st:"unknown",   pct:null,upd:"90",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
-  {id:"23F",theme:"Management",areas:[
-    {id:"23a",name:"Executive Zone",    st:"unknown",   pct:null,upd:"60",conf:"low", tags:["Monitor"],                  reports:0},
-    {id:"23b",name:"Conf Cluster",      st:"busy",      pct:20, upd:"8",conf:"high",  tags:["Team-friendly"],            reports:4},
-    {id:"23c",name:"Open Deck",         st:"available", pct:78, upd:"4",conf:"high",  tags:["Quiet","Power outlet"],     reports:3},
-    {id:"23d",name:"Lounge 23",         st:"moderate",  pct:55, upd:"6",conf:"medium",tags:["Short stay","Power outlet"],reports:2},
+  // 23F: High Security（画像より: 18Fと同パターン）
+  {id:"23F",theme:"High Security",areas:[
+    {id:"23a",name:"High Security Area",  st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
+    {id:"23b",name:"Secure Project A",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+    {id:"23c",name:"Support Nook",        st:"available", pct:78, upd:"4", conf:"high",  tags:["Short stay","Power outlet"], reports:3},
+    {id:"23d",name:"Secure Project B",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
-  {id:"24F",theme:"HR & Finance",areas:[
-    {id:"24a",name:"HR Open Floor",     st:"available", pct:80, upd:"2",conf:"high",  tags:["Monitor","Power outlet"],   reports:5},
-    {id:"24b",name:"Finance Row",       st:"moderate",  pct:45, upd:"14",conf:"medium",tags:["Monitor","Quiet"],         reports:2},
-    {id:"24c",name:"Training Room",     st:"almostfull",pct:12, upd:"5",conf:"high",  tags:["Team-friendly"],            reports:6},
-    {id:"24d",name:"Wellness Nook",     st:"available", pct:95, upd:"1",conf:"high",  tags:["Quiet","Short stay"],       reports:2},
+  // 24F: Work Zones（画像より: North/South + Collab + Focus/Monitor Seats）
+  {id:"24F",theme:"Work Zones",areas:[
+    {id:"24a",name:"North Work Zone",     st:"available", pct:80, upd:"2", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
+    {id:"24b",name:"East Work Zone",      st:"available", pct:72, upd:"4", conf:"high",  tags:["Monitor","Power outlet"],    reports:4},
+    {id:"24c",name:"Collaboration Areas", st:"moderate",  pct:45, upd:"11",conf:"medium",tags:["Team-friendly"],             reports:3},
+    {id:"24d",name:"South Work Zone",     st:"moderate",  pct:52, upd:"6", conf:"medium",tags:["Monitor","Power outlet"],    reports:3},
+    {id:"24e",name:"Focus / Monitor Seats",st:"available",pct:88, upd:"1", conf:"high",  tags:["Quiet","Monitor"],           reports:4},
   ]},
-  {id:"25F",theme:"Sky Lounge",areas:[
-    {id:"25a",name:"Sky Lounge North",  st:"available", pct:88, upd:"1",conf:"high",  tags:["Quiet","Power outlet"],     reports:4},
-    {id:"25b",name:"Sky Lounge South",  st:"available", pct:82, upd:"3",conf:"high",  tags:["Monitor","Power outlet"],   reports:3},
-    {id:"25c",name:"Panorama Meeting",  st:"moderate",  pct:40, upd:"9",conf:"medium",tags:["Team-friendly"],            reports:3},
-    {id:"25d",name:"Rooftop Terrace",   st:"unknown",   pct:null,upd:"90",conf:"low", tags:["Short stay"],               reports:0},
+  // 25F: Executive フロア（画像より）
+  {id:"25F",theme:"Executive",areas:[
+    {id:"25a",name:"Employee Co-creation",    st:"available", pct:82, upd:"3", conf:"high",  tags:["Team-friendly","Power outlet"],reports:4},
+    {id:"25b",name:"Executive Customer Rooms",st:"busy",      pct:15, upd:"5", conf:"high",  tags:["Team-friendly","Monitor"],     reports:5},
+    {id:"25c",name:"Executive Dining",        st:"available", pct:75, upd:"4", conf:"high",  tags:["Short stay","Team-friendly"],  reports:3},
+    {id:"25d",name:"Collaboration Coffee",    st:"moderate",  pct:50, upd:"8", conf:"medium",tags:["Short stay","Team-friendly"],  reports:3},
+    {id:"25e",name:"Executive Meeting",       st:"busy",      pct:20, upd:"6", conf:"high",  tags:["Team-friendly","Monitor"],     reports:4},
   ]},
 ];
 const FLOOR_AREAS={};
@@ -1030,63 +1049,212 @@ function renderFloorTabs(){
   });
 }
 
+// ── フロアごとのSVGゾーン定義（画像の箱崎フロアマップに基づく） ──
+// 各ゾーン: {i:エリアインデックス, x,y,w,h, label?:上書きラベル}
+// 共通構造: 上部ワークゾーン / 中央コア(灰) / 下部ゾーン
+const FLOOR_LAYOUTS={
+  // ── 17F: Support & Reception ──────────────────────────────────────────
+  // 上段: Support/Concierge | Consulting Mail | Classroom | Meeting Rooms
+  // 中: Central Core
+  // 下段: Cafe/Lounge | Event Space | Wellness/Massage
+  "17F": {
+    W:540, H:270,
+    core:{x:148,y:104,w:180,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:118,h:82},  // Support/Concierge
+      {i:1, x:134, y:14,  w:118,h:82},  // Consulting Mail
+      {i:4, x:260, y:14,  w:118,h:82},  // Classroom
+      {i:5, x:386, y:14,  w:146,h:82},  // Meeting Rooms
+      {i:2, x:8,   y:148, w:148,h:82},  // Cafe/Lounge
+      {i:3, x:164, y:148, w:148,h:82},  // Event Space
+      {i:6, x:360, y:148, w:172,h:82},  // Wellness/Massage
+    ]
+  },
+  // ── 18F / 20F / 23F: High Security ────────────────────────────────────
+  // 上段: High Security Area (横長)
+  // 中: Central Core
+  // 下段: Secure Project A | Document Support/Support Nook | Secure Project B
+  "18F": {
+    W:540, H:270,
+    core:{x:148,y:104,w:180,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:524,h:82},  // High Security Area (full width)
+      {i:1, x:8,   y:148, w:166,h:82},  // Secure Project A
+      {i:2, x:182, y:148, w:166,h:82},  // Document Support
+      {i:3, x:356, y:148, w:176,h:82},  // Secure Project B
+    ]
+  },
+  "20F": {
+    W:540, H:270,
+    core:{x:148,y:104,w:180,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:524,h:82},
+      {i:1, x:8,   y:148, w:166,h:82},
+      {i:2, x:182, y:148, w:166,h:82},  // Support Nook
+      {i:3, x:356, y:148, w:176,h:82},
+    ]
+  },
+  "23F": {
+    W:540, H:270,
+    core:{x:148,y:104,w:180,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:524,h:82},
+      {i:1, x:8,   y:148, w:166,h:82},
+      {i:2, x:182, y:148, w:166,h:82},  // Support Nook
+      {i:3, x:356, y:148, w:176,h:82},
+    ]
+  },
+  // ── 19F: Work Zones (North/East/Collab/South/Focus/HighSec) ───────────
+  // 上段: North Work Zone (広) | East Work Zone (狭)
+  // 中: Collab Pods(小) | Central Core | (空き)
+  // 下段: High Security(小) | South Work Zone | Focus/Web
+  "19F": {
+    W:540, H:310,
+    core:{x:196,y:122,w:148,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:330,h:100}, // North Work Zone
+      {i:1, x:346, y:14,  w:186,h:100}, // East Work Zone
+      {i:2, x:8,   y:118, w:180,h:48},  // Collaboration Pods (小)
+      {i:3, x:8,   y:174, w:230,h:100}, // South Work Zone
+      {i:4, x:346, y:174, w:186,h:100}, // Focus/Web
+      {i:5, x:8,   y:280, w:160,h:22,isSmall:true},  // High Security (ラベルのみ)
+    ]
+  },
+  // ── 21F / 22F / 24F: Work Zones (North/East/Collab/South/Focus) ───────
+  "21F": {
+    W:540, H:310,
+    core:{x:196,y:122,w:148,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:330,h:100}, // North Work Zone
+      {i:1, x:346, y:14,  w:186,h:100}, // East Work Zone
+      {i:2, x:8,   y:118, w:180,h:48},  // Collaboration Areas
+      {i:3, x:8,   y:174, w:330,h:100}, // South Work Zone
+      {i:4, x:346, y:174, w:186,h:100}, // Focus Rooms
+    ]
+  },
+  "22F": {
+    W:540, H:310,
+    core:{x:196,y:122,w:148,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:330,h:100}, // North Work Zone
+      {i:1, x:346, y:14,  w:186,h:100}, // East Work Zone
+      {i:2, x:8,   y:118, w:130,h:48},  // Collaboration Areas
+      {i:5, x:146, y:118, w:140,h:48},  // Restricted/Dept
+      {i:3, x:8,   y:174, w:330,h:100}, // South Work Zone
+      {i:4, x:346, y:174, w:186,h:100}, // Focus Rooms
+    ]
+  },
+  "24F": {
+    W:540, H:310,
+    core:{x:196,y:122,w:148,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:330,h:100}, // North Work Zone
+      {i:1, x:346, y:14,  w:186,h:100}, // East Work Zone
+      {i:2, x:8,   y:118, w:180,h:48},  // Collaboration Areas
+      {i:3, x:8,   y:174, w:330,h:100}, // South Work Zone
+      {i:4, x:346, y:174, w:186,h:100}, // Focus/Monitor Seats
+    ]
+  },
+  // ── 25F: Executive ────────────────────────────────────────────────────
+  // 上段: Employee Co-creation | Executive Customer Rooms
+  // 中: Central Core
+  // 下段: Executive Dining | Collaboration Coffee | Executive Meeting
+  "25F": {
+    W:540, H:270,
+    core:{x:148,y:104,w:180,h:36,label:"Central Core"},
+    zones:[
+      {i:0, x:8,   y:14,  w:254,h:82},  // Employee Co-creation
+      {i:1, x:270, y:14,  w:262,h:82},  // Executive Customer Rooms
+      {i:2, x:8,   y:148, w:156,h:82},  // Executive Dining
+      {i:3, x:172, y:148, w:172,h:82},  // Collaboration Coffee
+      {i:4, x:352, y:148, w:180,h:82},  // Executive Meeting
+    ]
+  },
+};
+
+function drawAreaZone(svg, z, a, sm, isTop, topId){
+  if(!a) return svg;
+  const pctTxt=a.pct!==null?a.pct+"%":"?";
+  const cdCol=a.conf==="high"?"#24a148":a.conf==="medium"?"#f1c21b":"#ff832b";
+  const nameShort=a.name.length>17?a.name.substring(0,16)+"…":a.name;
+  const mid=z.x+z.w/2;
+
+  if(z.isSmall){
+    // 小さいラベルのみゾーン（High Security 等）
+    svg+=`<g class="svg-area" data-aid="${a.id}" style="cursor:pointer">
+      <rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="3"
+            fill="${sm.fill}" stroke="${sm.stroke}" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="${mid}" y="${z.y+15}" text-anchor="middle" font-size="8" fill="${sm.stroke}" font-weight="600">${nameShort}</text>
+    </g>`;
+    return svg;
+  }
+
+  svg+=`<g class="svg-area" data-aid="${a.id}" style="cursor:pointer">
+    <rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="6"
+          fill="${sm.fill}" stroke="${sm.stroke}" stroke-width="${isTop?2.5:1.5}"/>`;
+
+  // TOP badge
+  if(isTop) svg+=`<rect x="${z.x+4}" y="${z.y+4}" width="40" height="12" rx="2" fill="${sm.stroke}"/>
+    <text x="${z.x+5}" y="${z.y+12.5}" font-size="7.5" fill="#fff" font-weight="700">★ TOP</text>`;
+
+  // confidence dot
+  svg+=`<circle cx="${z.x+z.w-9}" cy="${z.y+9}" r="4.5" fill="${cdCol}" opacity=".9"/>`;
+
+  // エリア名
+  svg+=`<text x="${mid}" y="${z.y+18}" text-anchor="middle" font-size="9.5" fill="#161616" font-weight="700">${nameShort}</text>`;
+
+  // 空席率 or ?
+  if(z.h>=60){
+    svg+=`<text x="${mid}" y="${z.y+(z.h>=90?52:45)}" text-anchor="middle" font-size="${z.h>=90?24:20}" fill="${sm.stroke}" font-weight="800">${pctTxt}</text>`;
+    svg+=`<text x="${mid}" y="${z.y+(z.h>=90?65:56)}" text-anchor="middle" font-size="8.5" fill="#525252">${stLabel(a.st)}</text>`;
+    if(z.h>=80) svg+=`<text x="${mid}" y="${z.y+z.h-8}" text-anchor="middle" font-size="7.5" fill="#8d8d8d">${updText(a.upd)}</text>`;
+  } else {
+    svg+=`<text x="${mid}" y="${z.y+38}" text-anchor="middle" font-size="16" fill="${sm.stroke}" font-weight="800">${pctTxt}</text>`;
+  }
+  svg+=`</g>`;
+  return svg;
+}
+
 function renderMap(){
   renderFloorTabs();
   const floor=FLOORS.find(f=>f.id===state.mapFloor); if(!floor) return;
   const areas=floor.areas;
   const topId=scoreAreas(null)[0]?.a.id;
+  const layout=FLOOR_LAYOUTS[floor.id];
 
-  // ── Rich SVG zone map ──
-  // Floor outline with 4 labelled zones arranged like a real floor
-  // Layout positions (inside a 460×240 canvas):
-  // NW=top-left, NE=top-right, SW=bottom-left, SE=bottom-right
-  const zones=[
-    {i:0,x:14, y:26, w:198,h:94},
-    {i:1,x:246,y:26, w:198,h:94},
-    {i:2,x:14, y:134,w:198,h:94},
-    {i:3,x:246,y:134,w:198,h:94},
-  ];
-  let svg=`<svg viewBox="0 0 460 240" width="100%" style="display:block">
-  <rect x="4" y="4" width="452" height="232" rx="8" fill="#eef2f7" stroke="#c8d0dc" stroke-width="1.5"/>
-  <!-- corridors -->
-  <line x1="228" y1="4" x2="228" y2="236" stroke="#dde2ea" stroke-width="4"/>
-  <line x1="4" y1="122" x2="456" y2="122" stroke="#dde2ea" stroke-width="4"/>
-  <!-- floor label -->
-  <text x="230" y="15" text-anchor="middle" font-size="9" fill="#8d8d8d" font-weight="700">${floor.id} — ${floor.theme}</text>`;
+  if(!layout){
+    // fallback: 2x2グリッド
+    document.getElementById("mapSVGWrap").innerHTML="<p style='padding:12px;color:var(--muted)'>Map not available</p>";
+  } else {
+    const W=layout.W, H=layout.H;
+    let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;font-family:-apple-system,sans-serif">
+    <rect x="2" y="2" width="${W-4}" height="${H-4}" rx="10" fill="#eef2f7" stroke="#c8d0dc" stroke-width="1.5"/>
+    <text x="${W/2}" y="12" text-anchor="middle" font-size="8.5" fill="#8d8d8d" font-weight="700">${floor.id} — ${floor.theme} (Not to scale)</text>`;
 
-  zones.forEach(z=>{
-    const a=areas[z.i]; if(!a) return;
-    const sm=ST[a.st]||ST.unknown;
-    const isTop=a.id===topId;
-    const pctTxt=a.pct!==null?a.pct+"%":"?";
-    // area block
-    svg+=`<g class="svg-area" data-aid="${a.id}" style="cursor:pointer">
-      <rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="6"
-            fill="${sm.fill}" stroke="${sm.stroke}" stroke-width="${isTop?2.5:1.5}"/>`;
-    // top badge
-    if(isTop) svg+=`<rect x="${z.x+4}" y="${z.y+4}" width="44" height="13" rx="3" fill="${sm.stroke}"/>
-      <text x="${z.x+6}" y="${z.y+13}" font-size="8" fill="#fff" font-weight="700">★ TOP</text>`;
-    // area name (truncated)
-    const nameShort=a.name.length>16?a.name.substring(0,15)+"…":a.name;
-    svg+=`<text x="${z.x+z.w/2}" y="${z.y+24}" text-anchor="middle" font-size="10" fill="#161616" font-weight="700">${nameShort}</text>
-      <!-- big pct -->
-      <text x="${z.x+z.w/2}" y="${z.y+58}" text-anchor="middle" font-size="28" fill="${sm.stroke}" font-weight="800">${pctTxt}</text>
-      <text x="${z.x+z.w/2}" y="${z.y+73}" text-anchor="middle" font-size="9" fill="#525252">${stLabel(a.st)}</text>
-      <text x="${z.x+z.w/2}" y="${z.y+86}" text-anchor="middle" font-size="8" fill="#8d8d8d">${updText(a.upd)}</text>`;
-    // confidence dot
-    const cdCol=a.conf==="high"?"#24a148":a.conf==="medium"?"#f1c21b":"#ff832b";
-    svg+=`<circle cx="${z.x+z.w-10}" cy="${z.y+10}" r="5" fill="${cdCol}" opacity=".85"/>`;
-    svg+=`</g>`;
-  });
+    // Central Core
+    if(layout.core){
+      const c=layout.core;
+      svg+=`<rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="4" fill="#dde2ea" stroke="#b0bac6" stroke-width="1"/>
+      <text x="${c.x+c.w/2}" y="${c.y+14}" text-anchor="middle" font-size="9" fill="#525252" font-weight="600">${c.label}</text>
+      <text x="${c.x+c.w/2}" y="${c.y+26}" text-anchor="middle" font-size="8" fill="#8d8d8d">Core</text>`;
+    }
 
-  // compass rose (decorative)
-  svg+=`<text x="440" y="230" font-size="9" fill="#c0c8d4" text-anchor="end">N↑</text>`;
-  svg+=`</svg>`;
+    // エリアゾーン
+    layout.zones.forEach(z=>{
+      const a=areas[z.i];
+      if(!a) return;
+      const sm=ST[a.st]||ST.unknown;
+      svg=drawAreaZone(svg, z, a, sm, a.id===topId, topId);
+    });
 
-  document.getElementById("mapSVGWrap").innerHTML=svg;
-  document.querySelectorAll(".svg-area").forEach(g=>{
-    g.addEventListener("click",()=>openModal(g.dataset.aid));
-  });
+    svg+=`<text x="${W-4}" y="${H-4}" font-size="7" fill="#c0c8d4" text-anchor="end">App illustration — not to scale</text>`;
+    svg+=`</svg>`;
+
+    document.getElementById("mapSVGWrap").innerHTML=svg;
+    document.querySelectorAll(".svg-area").forEach(g=>{
+      g.addEventListener("click",()=>openModal(g.dataset.aid));
+    });
+  }
 
   // legend
   document.getElementById("mapLegend").innerHTML=
