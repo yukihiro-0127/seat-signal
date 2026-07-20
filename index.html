@@ -54,6 +54,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .topbar-lang button.active{background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,.6)}
 
 .content{flex:1;padding:20px;width:100%;max-width:860px}
+.content.map-mode{max-width:100%}
 
 /* Screens */
 .screen{display:none}
@@ -96,6 +97,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 }
 @media(min-width:1025px){
   .content{padding:24px 32px}
+  .content.map-mode{padding:20px 24px}
 }
 
 /* CARDS */
@@ -136,7 +138,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .btn{display:block;width:100%;padding:11px;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;border:none;text-align:center;transition:background .15s}
 .btn-p{background:var(--blue);color:#fff}
 .btn-p:hover{background:var(--blue-dark)}
-.btn-d{background:var(--red);color:#fff;margin-top:8px}
+.btn-d{background:var(--red);color:#fff;margin-top:8px;position:relative;z-index:1}
 .btn-o{background:transparent;border:1px solid var(--blue);color:var(--blue);margin-top:8px}
 .btn-o:hover{background:var(--blue-bg)}
 /* FLOOR CHECKBOX GRID */
@@ -167,18 +169,21 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .ftab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 
 /* MAP LAYOUT: SVG zone map */
-.map-container{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
-@media(min-width:769px){.map-container{grid-template-columns:1fr 1fr;align-items:start}}
-.map-svg-wrap{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.map-container{display:grid;grid-template-columns:1fr;gap:0;margin-bottom:12px}
+@media(min-width:900px){.map-container{grid-template-columns:3fr 2fr;gap:16px;align-items:start}}
+@media(min-width:1200px){.map-container{grid-template-columns:3fr 2fr}}
+.map-svg-wrap{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;width:100%}
+.map-svg-wrap svg{display:block;width:100%;height:auto}
 .map-svg-wrap svg text{font-family:-apple-system,"Segoe UI",system-ui,sans-serif}
-.map-legend{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:#fafafa}
+.map-legend{display:flex;flex-wrap:wrap;gap:8px;padding:8px 12px;border-top:1px solid var(--border);background:#fafafa;border-radius:0 0 8px 8px}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 
 /* AREA GRID */
 .area-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-@media(min-width:1025px){.area-grid{grid-template-columns:1fr 1fr 1fr 1fr}}
-@media(min-width:769px) and (max-width:1024px){.area-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.area-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1200px){.area-grid{grid-template-columns:1fr 1fr 1fr}}
+@media(min-width:1400px){.area-grid{grid-template-columns:1fr 1fr 1fr 1fr}}
 .acard{border:2px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;position:relative;background:var(--white);transition:transform .1s,border-color .15s,box-shadow .15s}
 .acard:hover{box-shadow:0 2px 8px rgba(0,0,0,.1);transform:translateY(-1px)}
 .acard.s-av{border-color:var(--st-av-border)}
@@ -260,7 +265,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       <span class="nav-label">Seat Signal</span>
     </h1>
-    <p>箱崎事業所 17F–25F</p>
+    <p id="sidebarSub">箱崎事業所 17F–25F</p>
   </div>
   <nav class="sidebar-nav">
     <button class="snav-btn active" data-sc="home">
@@ -462,9 +467,13 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <label data-i18n="ci_type">席タイプ</label>
             <select id="ciType">
               <option value="any" data-i18n="ci_type_any">不明 / 指定なし</option>
-              <option>Monitor</option><option>Quiet</option><option>Team-friendly</option>
-              <option>Power outlet</option><option>Short stay</option>
-              <option>Standing desk</option><option>Phone booth</option>
+              <option value="Monitor" data-i18n="ci_type_monitor">モニター席</option>
+              <option value="Quiet" data-i18n="ci_type_quiet">静かな席</option>
+              <option value="Team-friendly" data-i18n="ci_type_team">チーム席</option>
+              <option value="Power outlet" data-i18n="ci_type_power">電源あり</option>
+              <option value="Short stay" data-i18n="ci_type_short">短時間利用</option>
+              <option value="Standing desk" data-i18n="ci_type_standing">スタンディング</option>
+              <option value="Phone booth" data-i18n="ci_type_phone">電話ブース</option>
             </select>
           </div>
           <div style="display:flex;gap:8px">
@@ -568,7 +577,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         <div class="pts-grid">
           <div class="pts-rule"><div class="n">+5</div><div class="l" data-i18n="nav_checkin">Check In</div></div>
           <div class="pts-rule"><div class="n">+5</div><div class="l" data-i18n="ci_checkout_short">Check Out</div></div>
-          <div class="pts-rule"><div class="n">+3</div><div class="l">Leaving Soon</div></div>
+          <div class="pts-rule"><div class="n">+3</div><div class="l" data-i18n="pts_leaving_soon">離席予告</div></div>
           <div class="pts-rule"><div class="n">+3</div><div class="l" data-i18n="pts_report">混雑報告</div></div>
         </div>
       </div>
@@ -725,6 +734,12 @@ const I18N = {
     tag_phone:"電話ブース",
     theme_support:"サポート・受付", theme_security:"高セキュリティ",
     theme_workzone:"ワークゾーン", theme_executive:"エグゼクティブ",
+    pts_leaving_soon:"離席予告",
+    sidebar_sub:"箱崎事業所 17F–25F",
+    ci_type_monitor:"モニター席", ci_type_quiet:"静かな席",
+    ci_type_team:"チーム席", ci_type_power:"電源あり",
+    ci_type_short:"短時間利用", ci_type_standing:"スタンディング",
+    ci_type_phone:"電話ブース",
   },
   en:{
     nav_home:"Home", nav_map:"Floor Map", nav_map_short:"Map",
@@ -804,6 +819,14 @@ const I18N = {
     ovlabel_relaxed:"Relaxed", ovlabel_moderate:"Moderate", ovlabel_busy:"Busy", ovlabel_packed:"Packed",
     ov_sub:"{pct}% of areas available · {n} areas Available",
     top_desc:"{pct}% vacancy · {conf} · Updated {upd}",
+    pts_leaving_soon:"Leaving Soon",
+    sidebar_sub:"Hakodate Office 17F–25F",
+    ci_type_monitor:"Monitor seat", ci_type_quiet:"Quiet seat",
+    ci_type_team:"Team seat", ci_type_power:"Power outlet",
+    ci_type_short:"Short stay", ci_type_standing:"Standing desk",
+    ci_type_phone:"Phone booth",
+    floor_select_hint:"Select floor(s)",
+    ci_floor_selected:"{n} floor(s) selected",
     rec_reason_pct:"Current vacancy is {pct}% — relatively open",
     rec_reason_tags:"Reported as: {tags}",
     rec_reason_upd:"Last updated {upd} ({conf})",
@@ -843,6 +866,14 @@ function applyI18n(){
   document.getElementById("mlEN").classList.toggle("active",lang==="en");
   if(document.getElementById("topJP")) document.getElementById("topJP").classList.toggle("active",lang==="ja");
   if(document.getElementById("topEN")) document.getElementById("topEN").classList.toggle("active",lang==="en");
+  // sidebar subtitle
+  const sb=document.getElementById("sidebarSub");
+  if(sb) sb.textContent=t("sidebar_sub");
+  // ciType select options — data-i18n driven update
+  document.querySelectorAll("#ciType option[data-i18n]").forEach(opt=>{
+    const v=I18N[lang][opt.dataset.i18n]||I18N.ja[opt.dataset.i18n];
+    if(v!==undefined) opt.textContent=v;
+  });
   renderHome(); renderMap();
 }
 function setLang(l){ lang=l; applyI18n(); }
@@ -1415,6 +1446,7 @@ document.getElementById("ciDur").addEventListener("input",function(){
   document.getElementById("durVal").innerHTML=this.value+`<span data-i18n="min">${t("min")}</span>`;
 });
 document.getElementById("lsTgl").addEventListener("click",function(){ this.classList.toggle("on"); state.lsSoon=this.classList.contains("on"); });
+document.getElementById("lsTgl2").addEventListener("click",function(){ this.classList.toggle("on"); state.lsSoon=this.classList.contains("on"); });
 
 function setCIStep(n){
   state.ciStep=n;
@@ -1550,6 +1582,8 @@ function switchScreen(id, pushState=true){
   if(!SCREEN_IDS.includes(id)) id="home";
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById("sc-"+id).classList.add("active");
+  // map-mode: コンテナ幅をフル活用
+  document.querySelector(".content").classList.toggle("map-mode", id==="map");
   // nav buttons
   document.querySelectorAll(".snav-btn,.bnav-btn").forEach(b=>b.classList.toggle("active",b.dataset.sc===id));
   window.scrollTo(0,0);
