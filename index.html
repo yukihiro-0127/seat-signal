@@ -139,6 +139,13 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .btn-d{background:var(--red);color:#fff;margin-top:8px}
 .btn-o{background:transparent;border:1px solid var(--blue);color:var(--blue);margin-top:8px}
 .btn-o:hover{background:var(--blue-bg)}
+/* FLOOR CHECKBOX GRID */
+.floor-cb-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+.floor-cb-label{display:flex;align-items:center;justify-content:center;gap:0;cursor:pointer;padding:0}
+.floor-cb-label input[type=checkbox]{display:none}
+.floor-cb-label span{display:block;width:100%;text-align:center;padding:6px 4px;border:1.5px solid var(--border);border-radius:4px;font-size:13px;font-weight:600;color:var(--muted);background:var(--gray-bg);transition:all .15s;user-select:none}
+.floor-cb-label input:checked+span{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.floor-cb-label:hover span{border-color:var(--blue);color:var(--blue)}
 
 /* METER */
 .meter-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--st-av-bg),var(--st-mo-bg) 35%,var(--st-bu-bg) 65%,var(--st-af-bg));position:relative;margin:8px 0 4px}
@@ -429,13 +436,19 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         <div class="card" id="ciStep1Panel">
           <div class="card-title" data-i18n="ci_step1">Step 1 — どこにいますか？</div>
           <div class="fg">
-            <label data-i18n="ci_floor">フロア</label>
-            <select id="ciFloor">
-              <option value="" data-i18n="ci_select_floor">フロアを選択</option>
-              <option>17F</option><option>18F</option><option>19F</option>
-              <option>20F</option><option>21F</option><option>22F</option>
-              <option>23F</option><option>24F</option><option>25F</option>
-            </select>
+            <label data-i18n="ci_floor">フロア（複数選択可）</label>
+            <div id="ciFloorHint" style="font-size:11px;color:var(--muted);margin-bottom:6px" data-i18n="floor_select_hint">フロアを選んでください（複数可）</div>
+            <div class="floor-cb-grid">
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="17F"><span>17F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="18F"><span>18F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="19F"><span>19F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="20F"><span>20F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="21F"><span>21F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="22F"><span>22F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="23F"><span>23F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="24F"><span>24F</span></label>
+              <label class="floor-cb-label"><input type="checkbox" class="floor-cb" value="25F"><span>25F</span></label>
+            </div>
           </div>
           <div class="fg">
             <label data-i18n="ci_area">エリア</label>
@@ -621,38 +634,42 @@ const I18N = {
     nav_home:"ホーム", nav_map:"フロアマップ", nav_map_short:"マップ",
     nav_checkin:"チェックイン", nav_checkin_short:"チェックイン",
     nav_find:"席を探す", nav_find_short:"探す",
-    nav_pts:"Contribution Points", nav_pts_short:"ポイント",
+    nav_pts:"貢献ポイント", nav_pts_short:"ポイント",
     topbar_title:"箱崎事業所 空席状況",
     anon_notice:"🔒 匿名エリアレベルの共有 — 個人データは収集しません",
     home_congestion:"オフィス混雑状況 — 現在",
     home_floor_summary:"フロア別サマリー",
     meter_empty:"空", meter_full:"満",
-    top_rec:"TOP RECOMMENDATION",
-    pts_hint:"Check-in +5 · Check-out +5 · Leaving Soon +3",
+    top_rec:"⭐ おすすめエリア",
+    pts_hint:"チェックイン +5 · チェックアウト +5 · 離席予告 +3",
     privacy_footer:"🔒 位置情報はエリア単位で匿名化されます。個人の追跡はしません。",
     map_footer:"タップでエリア詳細 · データは匿名集計のみ",
-    ci_step1:"Step 1 — どこにいますか？",
-    ci_step2:"Step 2 — 席タイプ",
-    ci_step3:"Step 3 — 利用時間 & ステータス",
-    ci_floor:"フロア", ci_area:"エリア", ci_type:"席タイプ",
-    ci_select_floor:"フロアを選択", ci_select_area_first:"先にフロアを選んでください",
-    ci_type_any:"不明 / 指定なし",
+    ci_step1:"ステップ 1 — どこにいますか？",
+    ci_step2:"ステップ 2 — 席タイプ",
+    ci_step3:"ステップ 3 — 利用時間 & ステータス",
+    ci_floor:"フロア（複数選択可）", ci_area:"エリア", ci_type:"席タイプ",
+    ci_select_floor:"フロアを選択してください", ci_select_area_first:"先にフロアを選んでください",
+    ci_type_any:"指定なし",
+    ci_type_monitor:"モニター席", ci_type_quiet:"静かな席",
+    ci_type_team:"チーム席", ci_type_power:"電源あり",
+    ci_type_short:"短時間利用", ci_type_standing:"スタンディング",
+    ci_type_phone:"電話ブース",
     ci_duration:"利用予定時間", min:"分",
-    ci_leaving_soon:"🚶 もうすぐ離席 (15分以内)",
-    ci_do_checkin:"チェックイン ✓  +5pts",
+    ci_leaving_soon:"🚶 もうすぐ離席（15分以内）",
+    ci_do_checkin:"チェックイン ✓  +5pt",
     ci_status_update:"ステータス更新",
-    ci_share_leaving:"離席予告を共有  +3pts",
-    ci_report_title:"現在の混雑報告",
-    ci_report_busy:"🔴 混んできた  +3pts",
-    ci_report_free:"🟢 空いてきた  +3pts",
-    ci_checkout:"チェックアウト  +5pts",
-    ci_checkout_short:"Check Out",
+    ci_share_leaving:"離席予告を共有  +3pt",
+    ci_report_title:"現在の混雑状況を報告",
+    ci_report_busy:"🔴 混んできた  +3pt",
+    ci_report_free:"🟢 空いてきた  +3pt",
+    ci_checkout:"チェックアウト  +5pt",
+    ci_checkout_short:"チェックアウト",
     ci_privacy:"匿名データのみ · 個人は特定されません",
     btn_next:"次へ →", btn_back:"← 戻る",
     find_title:"AI風おすすめエリア検索",
     find_desc:"希望条件を自由に入力してください。現在のデータからベストなエリアを提案します。",
     find_placeholder:"例: 静かな席に座りたい",
-    rec_label:"RECOMMENDATION",
+    rec_label:"おすすめ",
     rec_why:"なぜここがおすすめ？",
     rec_disclaimer:"匿名クラウドソースデータに基づく推定です。",
     rec_conf_label:"信頼度:", rec_updated:"最終更新:",
@@ -662,16 +679,16 @@ const I18N = {
     pts_history:"アクティビティ履歴",
     pts_report:"混雑報告",
     pts_impact:"あなたの貢献で <strong>100人以上の同僚</strong>が素早く席を見つけられます。",
-    pts_demo_note:"デモ用ポイントです。BluePointsとは連携していません。",
+    pts_demo_note:"デモ用ポイントです。ブルーポイントとは連携していません。",
     modal_vacancy:"空席率", modal_reports:"報告数",
     modal_seat_types:"利用可能な席タイプ",
-    modal_disclaimer:"⚠️ クラウドソースデータです。現地確認をお願いします。",
-    modal_checkin_here:"ここでチェックイン",
-    toast_ci:"✅ チェックイン完了！ +5pts 獲得",
-    toast_co:"👋 チェックアウト完了！ +5pts 獲得",
-    toast_ls:"🚶 離席予告を共有しました！ +3pts",
-    toast_busy:"🔴 混雑報告を共有しました！ +3pts",
-    toast_free:"🟢 空席報告を共有しました！ +3pts",
+    modal_disclaimer:"⚠️ 匿名クラウドソースデータです。現地確認をお願いします。",
+    modal_checkin_here:"このエリアでチェックイン",
+    toast_ci:"✅ チェックイン完了！ +5pt 獲得",
+    toast_co:"👋 チェックアウト完了！ +5pt 獲得",
+    toast_ls:"🚶 離席予告を共有しました！ +3pt",
+    toast_busy:"🔴 混雑報告を共有しました！ +3pt",
+    toast_free:"🟢 空席報告を共有しました！ +3pt",
     toast_select:"フロアとエリアを選択してください",
     toast_rec_empty:"検索条件を入力してください",
     chips:[
@@ -680,26 +697,34 @@ const I18N = {
       {q:"チームで座れる場所が欲しい",l:"👥 チーム"},
       {q:"30分だけ使える席を探している",l:"⏱ 短時間"},
       {q:"空いているエリアに行きたい",l:"✅ 空き多め"},
-      {q:"スタンディングデスクが使いたい",l:"🧍 Standing"},
-      {q:"電話ブースを探している",l:"📞 Phone"},
+      {q:"スタンディングデスクが使いたい",l:"🧍 スタンディング"},
+      {q:"電話ブースを探している",l:"📞 電話ブース"},
       {q:"高層フロアに座りたい",l:"🏙 高層"},
     ],
     ci_active_sub:"チェックイン中 · 残り ~{n}分",
     ci_active_banner:"チェックイン中",
     not_checked_in:"未チェックイン",
     checked_in_at:"📍 {floor} · {area}",
-    vacancy:"空席率", conf_high:"High confidence", conf_medium:"Medium confidence", conf_low:"Low confidence",
+    vacancy:"空席率",
+    conf_high:"信頼度: 高", conf_medium:"信頼度: 中", conf_low:"信頼度: 低",
     updated:"更新: ", legend_title:"凡例",
-    status_available:"Available", status_moderate:"Moderate", status_busy:"Busy",
-    status_almostfull:"Almost Full", status_unknown:"Unknown",
+    status_available:"空きあり", status_moderate:"やや混雑", status_busy:"混雑",
+    status_almostfull:"ほぼ満席", status_unknown:"不明",
     ovlabel_relaxed:"余裕あり", ovlabel_moderate:"やや混雑", ovlabel_busy:"混雑", ovlabel_packed:"満席に近い",
-    ov_sub:"{pct}%のエリアに空きあり · {n}エリアがAvailable",
+    ov_sub:"{pct}%のエリアに空きあり · {n}エリアが空きあり",
     top_desc:"{pct}% 空席 · {conf} · {upd}更新",
     rec_reason_pct:"現在の空席率が{pct}% — 比較的余裕あり",
     rec_reason_tags:"「{tags}」として報告されています",
     rec_reason_upd:"最終更新 {upd} ({conf})",
     rec_reason_reports:"{n}件の報告あり — 信頼性の高いデータ",
     rec_reason_high:"高層フロア ({floor}) — 眺望あり",
+    floor_select_hint:"フロアを選んでください（複数可）",
+    ci_floor_selected:"{n}フロア選択中",
+    tag_monitor:"モニター", tag_quiet:"静か", tag_team:"チーム向け",
+    tag_power:"電源あり", tag_short:"短時間OK", tag_standing:"スタンディング",
+    tag_phone:"電話ブース",
+    theme_support:"サポート・受付", theme_security:"高セキュリティ",
+    theme_workzone:"ワークゾーン", theme_executive:"エグゼクティブ",
   },
   en:{
     nav_home:"Home", nav_map:"Floor Map", nav_map_short:"Map",
@@ -827,77 +852,77 @@ function setLang(l){ lang=l; applyI18n(); }
 // ═══════════════════════════════════════
 const FLOORS=[
   // 17F: Support/Reception フロア（画像より）
-  {id:"17F",theme:"Support & Reception",areas:[
-    {id:"17a",name:"Support / Concierge", st:"moderate",  pct:55, upd:"6", conf:"medium",tags:["Short stay","Power outlet"],reports:4},
-    {id:"17b",name:"Consulting Mail",     st:"available", pct:72, upd:"3", conf:"high",  tags:["Quiet","Monitor"],           reports:3},
-    {id:"17c",name:"Cafe / Lounge",       st:"available", pct:80, upd:"2", conf:"high",  tags:["Short stay","Team-friendly"],reports:5},
-    {id:"17d",name:"Event Space",         st:"busy",      pct:20, upd:"4", conf:"high",  tags:["Team-friendly"],             reports:6},
-    {id:"17e",name:"Classroom",           st:"moderate",  pct:45, upd:"8", conf:"medium",tags:["Team-friendly","Monitor"],   reports:3},
-    {id:"17f",name:"Meeting Rooms",       st:"busy",      pct:18, upd:"5", conf:"high",  tags:["Team-friendly"],             reports:5},
-    {id:"17g",name:"Wellness / Massage",  st:"available", pct:90, upd:"1", conf:"high",  tags:["Quiet","Short stay"],        reports:2},
+  {id:"17F",theme:"Support & Reception",jp_theme:"サポート・受付",areas:[
+    {id:"17a",name:"Support / Concierge", jp_name:"サポート / コンシェルジュ", st:"moderate",  pct:55, upd:"6", conf:"medium",tags:["Short stay","Power outlet"],reports:4},
+    {id:"17b",name:"Consulting Mail",     jp_name:"コンサルティング・メール",   st:"available", pct:72, upd:"3", conf:"high",  tags:["Quiet","Monitor"],           reports:3},
+    {id:"17c",name:"Cafe / Lounge",       jp_name:"カフェ / ラウンジ",          st:"available", pct:80, upd:"2", conf:"high",  tags:["Short stay","Team-friendly"],reports:5},
+    {id:"17d",name:"Event Space",         jp_name:"イベントスペース",            st:"busy",      pct:20, upd:"4", conf:"high",  tags:["Team-friendly"],             reports:6},
+    {id:"17e",name:"Classroom",           jp_name:"クラスルーム",               st:"moderate",  pct:45, upd:"8", conf:"medium",tags:["Team-friendly","Monitor"],   reports:3},
+    {id:"17f",name:"Meeting Rooms",       jp_name:"会議室",                     st:"busy",      pct:18, upd:"5", conf:"high",  tags:["Team-friendly"],             reports:5},
+    {id:"17g",name:"Wellness / Massage",  jp_name:"ウェルネス / マッサージ",    st:"available", pct:90, upd:"1", conf:"high",  tags:["Quiet","Short stay"],        reports:2},
   ]},
   // 18F: High Security フロア（画像より）
-  {id:"18F",theme:"High Security",areas:[
-    {id:"18a",name:"High Security Area",  st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
-    {id:"18b",name:"Secure Project A",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
-    {id:"18c",name:"Document Support",    st:"moderate",  pct:50, upd:"10",conf:"medium",tags:["Short stay"],                reports:2},
-    {id:"18d",name:"Secure Project B",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+  {id:"18F",theme:"High Security",jp_theme:"高セキュリティ",areas:[
+    {id:"18a",name:"High Security Area",  jp_name:"高セキュリティエリア",        st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
+    {id:"18b",name:"Secure Project A",    jp_name:"セキュアプロジェクト A",      st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+    {id:"18c",name:"Document Support",    jp_name:"ドキュメントサポート",        st:"moderate",  pct:50, upd:"10",conf:"medium",tags:["Short stay"],                reports:2},
+    {id:"18d",name:"Secure Project B",    jp_name:"セキュアプロジェクト B",      st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
   // 19F: Work Zones（画像より: North/South Work Zone + Collab Pods + Focus/Web）
-  {id:"19F",theme:"Work Zones",areas:[
-    {id:"19a",name:"North Work Zone",     st:"busy",      pct:30, upd:"7", conf:"high",  tags:["Monitor","Power outlet"],    reports:8},
-    {id:"19b",name:"East Work Zone",      st:"available", pct:70, upd:"3", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
-    {id:"19c",name:"Collaboration Pods",  st:"moderate",  pct:48, upd:"9", conf:"medium",tags:["Team-friendly"],             reports:4},
-    {id:"19d",name:"South Work Zone",     st:"moderate",  pct:52, upd:"6", conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
-    {id:"19e",name:"Focus / Web",         st:"available", pct:78, upd:"2", conf:"high",  tags:["Quiet","Monitor"],           reports:3},
-    {id:"19f",name:"High Security",       st:"unknown",   pct:null,upd:"45",conf:"low",  tags:["Monitor"],                   reports:0},
+  {id:"19F",theme:"Work Zones",jp_theme:"ワークゾーン",areas:[
+    {id:"19a",name:"North Work Zone",     jp_name:"北ワークゾーン",              st:"busy",      pct:30, upd:"7", conf:"high",  tags:["Monitor","Power outlet"],    reports:8},
+    {id:"19b",name:"East Work Zone",      jp_name:"東ワークゾーン",              st:"available", pct:70, upd:"3", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
+    {id:"19c",name:"Collaboration Pods",  jp_name:"コラボレーションポッド",      st:"moderate",  pct:48, upd:"9", conf:"medium",tags:["Team-friendly"],             reports:4},
+    {id:"19d",name:"South Work Zone",     jp_name:"南ワークゾーン",              st:"moderate",  pct:52, upd:"6", conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
+    {id:"19e",name:"Focus / Web",         jp_name:"フォーカス / ウェブ",         st:"available", pct:78, upd:"2", conf:"high",  tags:["Quiet","Monitor"],           reports:3},
+    {id:"19f",name:"High Security",       jp_name:"高セキュリティ",              st:"unknown",   pct:null,upd:"45",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
   // 20F: High Security（画像より: 18Fと同パターン）
-  {id:"20F",theme:"High Security",areas:[
-    {id:"20a",name:"High Security Area",  st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
-    {id:"20b",name:"Secure Project A",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
-    {id:"20c",name:"Support Nook",        st:"available", pct:80, upd:"3", conf:"high",  tags:["Short stay","Power outlet"], reports:3},
-    {id:"20d",name:"Secure Project B",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+  {id:"20F",theme:"High Security",jp_theme:"高セキュリティ",areas:[
+    {id:"20a",name:"High Security Area",  jp_name:"高セキュリティエリア",        st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
+    {id:"20b",name:"Secure Project A",    jp_name:"セキュアプロジェクト A",      st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+    {id:"20c",name:"Support Nook",        jp_name:"サポートコーナー",            st:"available", pct:80, upd:"3", conf:"high",  tags:["Short stay","Power outlet"], reports:3},
+    {id:"20d",name:"Secure Project B",    jp_name:"セキュアプロジェクト B",      st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
   // 21F: Work Zones（画像より: North/South Work Zone + Collab Areas + Focus Rooms）
-  {id:"21F",theme:"Work Zones",areas:[
-    {id:"21a",name:"North Work Zone",     st:"available", pct:76, upd:"2", conf:"high",  tags:["Monitor","Power outlet"],    reports:6},
-    {id:"21b",name:"East Work Zone",      st:"available", pct:68, upd:"5", conf:"high",  tags:["Monitor","Power outlet"],    reports:4},
-    {id:"21c",name:"Collaboration Areas", st:"moderate",  pct:50, upd:"13",conf:"medium",tags:["Team-friendly"],             reports:3},
-    {id:"21d",name:"South Work Zone",     st:"moderate",  pct:58, upd:"7", conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
-    {id:"21e",name:"Focus Rooms",         st:"available", pct:82, upd:"1", conf:"high",  tags:["Quiet","Monitor"],           reports:5},
+  {id:"21F",theme:"Work Zones",jp_theme:"ワークゾーン",areas:[
+    {id:"21a",name:"North Work Zone",     jp_name:"北ワークゾーン",              st:"available", pct:76, upd:"2", conf:"high",  tags:["Monitor","Power outlet"],    reports:6},
+    {id:"21b",name:"East Work Zone",      jp_name:"東ワークゾーン",              st:"available", pct:68, upd:"5", conf:"high",  tags:["Monitor","Power outlet"],    reports:4},
+    {id:"21c",name:"Collaboration Areas", jp_name:"コラボレーションエリア",      st:"moderate",  pct:50, upd:"13",conf:"medium",tags:["Team-friendly"],             reports:3},
+    {id:"21d",name:"South Work Zone",     jp_name:"南ワークゾーン",              st:"moderate",  pct:58, upd:"7", conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
+    {id:"21e",name:"Focus Rooms",         jp_name:"フォーカスルーム",            st:"available", pct:82, upd:"1", conf:"high",  tags:["Quiet","Monitor"],           reports:5},
   ]},
   // 22F: Work Zones（画像より: North/South + Collab + Focus + Restricted）
-  {id:"22F",theme:"Work Zones",areas:[
-    {id:"22a",name:"North Work Zone",     st:"moderate",  pct:42, upd:"10",conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
-    {id:"22b",name:"East Work Zone",      st:"available", pct:65, upd:"3", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
-    {id:"22c",name:"Collaboration Areas", st:"busy",      pct:22, upd:"7", conf:"high",  tags:["Team-friendly"],             reports:6},
-    {id:"22d",name:"South Work Zone",     st:"moderate",  pct:48, upd:"8", conf:"medium",tags:["Monitor","Power outlet"],    reports:3},
-    {id:"22e",name:"Focus Rooms",         st:"available", pct:85, upd:"2", conf:"high",  tags:["Quiet","Monitor"],           reports:4},
-    {id:"22f",name:"Restricted / Dept",   st:"unknown",   pct:null,upd:"90",conf:"low",  tags:["Monitor"],                   reports:0},
+  {id:"22F",theme:"Work Zones",jp_theme:"ワークゾーン",areas:[
+    {id:"22a",name:"North Work Zone",     jp_name:"北ワークゾーン",              st:"moderate",  pct:42, upd:"10",conf:"medium",tags:["Monitor","Power outlet"],    reports:4},
+    {id:"22b",name:"East Work Zone",      jp_name:"東ワークゾーン",              st:"available", pct:65, upd:"3", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
+    {id:"22c",name:"Collaboration Areas", jp_name:"コラボレーションエリア",      st:"busy",      pct:22, upd:"7", conf:"high",  tags:["Team-friendly"],             reports:6},
+    {id:"22d",name:"South Work Zone",     jp_name:"南ワークゾーン",              st:"moderate",  pct:48, upd:"8", conf:"medium",tags:["Monitor","Power outlet"],    reports:3},
+    {id:"22e",name:"Focus Rooms",         jp_name:"フォーカスルーム",            st:"available", pct:85, upd:"2", conf:"high",  tags:["Quiet","Monitor"],           reports:4},
+    {id:"22f",name:"Restricted / Dept",   jp_name:"制限エリア",                  st:"unknown",   pct:null,upd:"90",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
   // 23F: High Security（画像より: 18Fと同パターン）
-  {id:"23F",theme:"High Security",areas:[
-    {id:"23a",name:"High Security Area",  st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
-    {id:"23b",name:"Secure Project A",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
-    {id:"23c",name:"Support Nook",        st:"available", pct:78, upd:"4", conf:"high",  tags:["Short stay","Power outlet"], reports:3},
-    {id:"23d",name:"Secure Project B",    st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+  {id:"23F",theme:"High Security",jp_theme:"高セキュリティ",areas:[
+    {id:"23a",name:"High Security Area",  jp_name:"高セキュリティエリア",        st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor","Power outlet"],    reports:0},
+    {id:"23b",name:"Secure Project A",    jp_name:"セキュアプロジェクト A",      st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
+    {id:"23c",name:"Support Nook",        jp_name:"サポートコーナー",            st:"available", pct:78, upd:"4", conf:"high",  tags:["Short stay","Power outlet"], reports:3},
+    {id:"23d",name:"Secure Project B",    jp_name:"セキュアプロジェクト B",      st:"unknown",   pct:null,upd:"60",conf:"low",  tags:["Monitor"],                   reports:0},
   ]},
   // 24F: Work Zones（画像より: North/South + Collab + Focus/Monitor Seats）
-  {id:"24F",theme:"Work Zones",areas:[
-    {id:"24a",name:"North Work Zone",     st:"available", pct:80, upd:"2", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
-    {id:"24b",name:"East Work Zone",      st:"available", pct:72, upd:"4", conf:"high",  tags:["Monitor","Power outlet"],    reports:4},
-    {id:"24c",name:"Collaboration Areas", st:"moderate",  pct:45, upd:"11",conf:"medium",tags:["Team-friendly"],             reports:3},
-    {id:"24d",name:"South Work Zone",     st:"moderate",  pct:52, upd:"6", conf:"medium",tags:["Monitor","Power outlet"],    reports:3},
-    {id:"24e",name:"Focus / Monitor Seats",st:"available",pct:88, upd:"1", conf:"high",  tags:["Quiet","Monitor"],           reports:4},
+  {id:"24F",theme:"Work Zones",jp_theme:"ワークゾーン",areas:[
+    {id:"24a",name:"North Work Zone",     jp_name:"北ワークゾーン",              st:"available", pct:80, upd:"2", conf:"high",  tags:["Monitor","Power outlet"],    reports:5},
+    {id:"24b",name:"East Work Zone",      jp_name:"東ワークゾーン",              st:"available", pct:72, upd:"4", conf:"high",  tags:["Monitor","Power outlet"],    reports:4},
+    {id:"24c",name:"Collaboration Areas", jp_name:"コラボレーションエリア",      st:"moderate",  pct:45, upd:"11",conf:"medium",tags:["Team-friendly"],             reports:3},
+    {id:"24d",name:"South Work Zone",     jp_name:"南ワークゾーン",              st:"moderate",  pct:52, upd:"6", conf:"medium",tags:["Monitor","Power outlet"],    reports:3},
+    {id:"24e",name:"Focus / Monitor Seats",jp_name:"フォーカス / モニター席",   st:"available", pct:88, upd:"1", conf:"high",  tags:["Quiet","Monitor"],           reports:4},
   ]},
   // 25F: Executive フロア（画像より）
-  {id:"25F",theme:"Executive",areas:[
-    {id:"25a",name:"Employee Co-creation",    st:"available", pct:82, upd:"3", conf:"high",  tags:["Team-friendly","Power outlet"],reports:4},
-    {id:"25b",name:"Executive Customer Rooms",st:"busy",      pct:15, upd:"5", conf:"high",  tags:["Team-friendly","Monitor"],     reports:5},
-    {id:"25c",name:"Executive Dining",        st:"available", pct:75, upd:"4", conf:"high",  tags:["Short stay","Team-friendly"],  reports:3},
-    {id:"25d",name:"Collaboration Coffee",    st:"moderate",  pct:50, upd:"8", conf:"medium",tags:["Short stay","Team-friendly"],  reports:3},
-    {id:"25e",name:"Executive Meeting",       st:"busy",      pct:20, upd:"6", conf:"high",  tags:["Team-friendly","Monitor"],     reports:4},
+  {id:"25F",theme:"Executive",jp_theme:"エグゼクティブ",areas:[
+    {id:"25a",name:"Employee Co-creation",    jp_name:"社員共創スペース",         st:"available", pct:82, upd:"3", conf:"high",  tags:["Team-friendly","Power outlet"],reports:4},
+    {id:"25b",name:"Executive Customer Rooms",jp_name:"エグゼクティブ応接室",     st:"busy",      pct:15, upd:"5", conf:"high",  tags:["Team-friendly","Monitor"],     reports:5},
+    {id:"25c",name:"Executive Dining",        jp_name:"エグゼクティブダイニング", st:"available", pct:75, upd:"4", conf:"high",  tags:["Short stay","Team-friendly"],  reports:3},
+    {id:"25d",name:"Collaboration Coffee",    jp_name:"コラボレーションカフェ",   st:"moderate",  pct:50, upd:"8", conf:"medium",tags:["Short stay","Team-friendly"],  reports:3},
+    {id:"25e",name:"Executive Meeting",       jp_name:"エグゼクティブ会議室",     st:"busy",      pct:20, upd:"6", conf:"high",  tags:["Team-friendly","Monitor"],     reports:4},
   ]},
 ];
 const FLOOR_AREAS={};
@@ -945,7 +970,14 @@ function showToast(msg){
 }
 function getArea(id){let r=null;FLOORS.forEach(f=>f.areas.forEach(a=>{if(a.id===id)r=a;}));return r;}
 function getFloorOfArea(id){let r=null;FLOORS.forEach(f=>f.areas.forEach(a=>{if(a.id===id)r=f;}));return r;}
-function getAreaByName(fid,name){const f=FLOORS.find(x=>x.id===fid);return f?f.areas.find(a=>a.name===name):null;}
+function getAreaByName(fid,name){
+  const f=FLOORS.find(x=>x.id===fid);
+  if(!f) return null;
+  // JP/EN両方でマッチ
+  return f.areas.find(a=>a.name===name||a.jp_name===name)||null;
+}
+function areaDisplayName(a){ return lang==="ja"&&a.jp_name ? a.jp_name : a.name; }
+function floorDisplayTheme(f){ return lang==="ja"&&f.jp_theme ? f.jp_theme : f.theme; }
 function recalcSt(a){
   if(a.pct===null){a.st="unknown";return;}
   if(a.pct>=65)a.st="available";
@@ -961,6 +993,13 @@ function addPts(p,label){
 function stLabel(st){ return t("status_"+st)||st; }
 function confLabel(c){ return t(CF[c]||"conf_low"); }
 function updText(n){ return lang==="ja"?n+"分前":n+" min ago"; }
+// タグラベルをi18n辞書から解決
+const TAG_KEY_MAP={
+  "Monitor":"tag_monitor","Quiet":"tag_quiet","Team-friendly":"tag_team",
+  "Power outlet":"tag_power","Short stay":"tag_short",
+  "Standing desk":"tag_standing","Phone booth":"tag_phone",
+};
+function tagLabel(tag){ const k=TAG_KEY_MAP[tag]; return (k&&lang==="ja")?t(k):tag; }
 
 function scoreAreas(pref){
   const scored=[];
@@ -1023,22 +1062,22 @@ function renderHome(){
   const best=scoreAreas(null)[0];
   if(best){
     const a=best.a; const sm=ST[a.st]||ST.unknown;
-    document.getElementById("topPickName").textContent=best.floor.id+" · "+a.name;
+    document.getElementById("topPickName").textContent=best.floor.id+" · "+areaDisplayName(a);
     const b=document.getElementById("topPickBadge");
     b.className="badge "+sm.bc; b.textContent=stLabel(a.st);
     document.getElementById("topPickDesc").textContent=
       t("top_desc",{pct:a.pct!==null?a.pct+"% —":"",conf:confLabel(a.conf),upd:updText(a.upd)});
-    document.getElementById("topPickTags").innerHTML=a.tags.map(tg=>`<span class="tag">${tg}</span>`).join("");
+    document.getElementById("topPickTags").innerHTML=a.tags.map(tg=>`<span class="tag">${tagLabel(tg)}</span>`).join("");
   }
 
   // floor summary
   const el=document.getElementById("fsSummary");
   el.innerHTML=FLOORS.map(f=>{
     const av=f.areas.filter(a=>a.st==="available").length;
-    const dots=f.areas.map(a=>`<div class="fs-dot" style="background:${(ST[a.st]||ST.unknown).col}" title="${a.name}"></div>`).join("");
+    const dots=f.areas.map(a=>`<div class="fs-dot" style="background:${(ST[a.st]||ST.unknown).col}" title="${areaDisplayName(a)}"></div>`).join("");
     return `<div class="fs-row" data-fid="${f.id}">
       <div class="fs-floor">${f.id}</div>
-      <div style="font-size:10px;color:var(--muted);width:110px;flex-shrink:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${f.theme}</div>
+      <div style="font-size:10px;color:var(--muted);width:110px;flex-shrink:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${floorDisplayTheme(f)}</div>
       <div class="fs-dots">${dots}</div>
       <div class="fs-avail">${av}/${f.areas.length}</div>
     </div>`;
@@ -1189,7 +1228,8 @@ function drawAreaZone(svg, z, a, sm, isTop, topId){
   if(!a) return svg;
   const pctTxt=a.pct!==null?a.pct+"%":"?";
   const cdCol=CONF_DOT[a.conf]||CONF_DOT.low;
-  const nameShort=a.name.length>17?a.name.substring(0,16)+"…":a.name;
+  const dispName=areaDisplayName(a);
+  const nameShort=dispName.length>17?dispName.substring(0,16)+"…":dispName;
   const mid=z.x+z.w/2;
 
   if(z.isSmall){
@@ -1242,7 +1282,7 @@ function renderMap(){
     const W=layout.W, H=layout.H;
     let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;font-family:-apple-system,sans-serif">
     <rect x="2" y="2" width="${W-4}" height="${H-4}" rx="10" fill="#eef2f7" stroke="#c8d0dc" stroke-width="1.5"/>
-    <text x="${W/2}" y="12" text-anchor="middle" font-size="8.5" fill="#8d8d8d" font-weight="700">${floor.id} — ${floor.theme} (Not to scale)</text>`;
+    <text x="${W/2}" y="12" text-anchor="middle" font-size="8.5" fill="#8d8d8d" font-weight="700">${floor.id} — ${floorDisplayTheme(floor)} (Not to scale)</text>`;
 
     // Central Core
     if(layout.core){
@@ -1277,18 +1317,18 @@ function renderMap(){
 
   // area cards
   document.getElementById("areaList").innerHTML=`
-    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:8px">${floor.id} — ${floor.theme}</div>
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:8px">${floor.id} — ${floorDisplayTheme(floor)}</div>
     <div class="area-grid">
     ${areas.map(a=>{
       const sm=ST[a.st]||ST.unknown;
       return `<div class="acard ${sm.ac}" data-aid="${a.id}">
         ${a.id===topId?`<div class="rec-star">★ TOP</div>`:""}
-        <div class="acard-name">${a.name}</div>
+        <div class="acard-name">${areaDisplayName(a)}</div>
         <span class="badge ${sm.bc}">${stLabel(a.st)}</span>
         <div class="acard-pct ${sm.pcc}">${a.pct!==null?a.pct+"%":"—"}</div>
         <div class="conf"><span class="cdot ${a.conf==="high"?"ch":a.conf==="medium"?"cm":"cl"}"></span>${confLabel(a.conf)}</div>
         <div class="acard-upd">${t("updated")}${updText(a.upd)}</div>
-        <div class="tags">${a.tags.slice(0,2).map(tg=>`<span class="tag">${tg}</span>`).join("")}</div>
+        <div class="tags">${a.tags.slice(0,2).map(tg=>`<span class="tag">${tagLabel(tg)}</span>`).join("")}</div>
       </div>`;
     }).join("")}
     </div>`;
@@ -1306,7 +1346,7 @@ function openModal(aid){
   const sm=ST[a.st]||ST.unknown;
   const cdc=a.conf==="high"?"ch":a.conf==="medium"?"cm":"cl";
   document.getElementById("mContent").innerHTML=`
-    <div style="font-size:18px;font-weight:700;margin-bottom:8px">${floor.id} · ${a.name}</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px">${floor.id} · ${areaDisplayName(a)}</div>
     <span class="badge ${sm.bc}">${stLabel(a.st)}</span>
     <div style="display:flex;gap:20px;margin:12px 0">
       <div><div style="font-size:28px;font-weight:700;color:${sm.col}">${a.pct!==null?a.pct+"%":"—"}</div>
@@ -1317,15 +1357,18 @@ function openModal(aid){
            <div style="font-size:10px;color:var(--muted)">${t("modal_reports")}</div></div>
     </div>
     <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">${t("modal_seat_types")}</div>
-    <div class="tags">${a.tags.map(tg=>`<span class="tag">${tg}</span>`).join("")}</div>
+    <div class="tags">${a.tags.map(tg=>`<span class="tag">${tagLabel(tg)}</span>`).join("")}</div>
     <div style="margin-top:14px;font-size:11px;color:var(--muted);padding-top:10px;border-top:1px solid var(--border)">${t("modal_disclaimer")}</div>
     <button class="btn btn-p" style="margin-top:12px" id="modalCI">${t("modal_checkin_here")}</button>
   `;
   document.getElementById("mOv").classList.add("open");
   document.getElementById("modalCI").addEventListener("click",()=>{
-    document.getElementById("ciFloor").value=floor.id;
+    // チェックボックスUIでフロアを選択状態にしてからエリアを反映
+    document.querySelectorAll(".floor-cb").forEach(cb=>{
+      cb.checked = cb.value===floor.id;
+    });
     updateAreaSel();
-    document.getElementById("ciArea").value=a.name;
+    document.getElementById("ciArea").value=areaDisplayName(a);
     document.getElementById("mOv").classList.remove("open");
     switchScreen("checkin");
   });
@@ -1336,13 +1379,37 @@ document.getElementById("mOv").addEventListener("click",e=>{ if(e.target===docum
 // ═══════════════════════════════════════
 //  CHECK-IN
 // ═══════════════════════════════════════
+function getSelectedFloors(){
+  return [...document.querySelectorAll(".floor-cb:checked")].map(cb=>cb.value);
+}
 function updateAreaSel(){
-  const fv=document.getElementById("ciFloor").value;
+  const selFloors=getSelectedFloors();
   const sel=document.getElementById("ciArea");
   sel.innerHTML=`<option value="">${t("ci_select_area_first")}</option>`;
-  if(fv&&FLOOR_AREAS[fv]) FLOOR_AREAS[fv].forEach(n=>sel.innerHTML+=`<option>${n}</option>`);
+  if(selFloors.length===0) return;
+  // 選択フロアの全エリアを表示（フロアが複数の場合はフロアIDを接頭辞にする）
+  selFloors.forEach(fid=>{
+    const f=FLOORS.find(x=>x.id===fid); if(!f) return;
+    const grp=document.createElement("optgroup");
+    grp.label=fid;
+    f.areas.forEach(a=>{
+      const opt=document.createElement("option");
+      opt.value=areaDisplayName(a);
+      opt.textContent=(selFloors.length>1?fid+" · ":"")+areaDisplayName(a);
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
+  });
+  // フロアラベル更新
+  const hint=document.getElementById("ciFloorHint");
+  if(hint) hint.textContent=selFloors.length>0?t("ci_floor_selected",{n:selFloors.length}):t("floor_select_hint");
 }
-document.getElementById("ciFloor").addEventListener("change",updateAreaSel);
+// フロアチェックボックスにイベント付与
+function bindFloorCBs(){
+  document.querySelectorAll(".floor-cb").forEach(cb=>{
+    cb.addEventListener("change",updateAreaSel);
+  });
+}
 document.getElementById("ciDur").addEventListener("input",function(){
   state.ciDur=parseInt(this.value);
   document.getElementById("durVal").innerHTML=this.value+`<span data-i18n="min">${t("min")}</span>`;
@@ -1361,7 +1428,7 @@ function setCIStep(n){
   });
 }
 document.getElementById("ciNext1").addEventListener("click",()=>{
-  if(!document.getElementById("ciFloor").value||!document.getElementById("ciArea").value){ showToast(t("toast_select")); return; }
+  if(getSelectedFloors().length===0||!document.getElementById("ciArea").value){ showToast(t("toast_select")); return; }
   setCIStep(2);
 });
 document.getElementById("ciBack1").addEventListener("click",()=>setCIStep(1));
@@ -1369,10 +1436,17 @@ document.getElementById("ciNext2").addEventListener("click",()=>setCIStep(3));
 document.getElementById("ciBack2").addEventListener("click",()=>setCIStep(2));
 
 document.getElementById("ciDoCheckIn").addEventListener("click",()=>{
-  const fl=document.getElementById("ciFloor").value, ar=document.getElementById("ciArea").value;
-  if(!fl||!ar){ showToast(t("toast_select")); return; }
+  const selFloors=getSelectedFloors();
+  const ar=document.getElementById("ciArea").value;
+  if(selFloors.length===0||!ar){ showToast(t("toast_select")); return; }
+  // エリア表示名からフロアを特定
+  let fl=selFloors[0];
+  for(const fid of selFloors){
+    const f=FLOORS.find(x=>x.id===fid);
+    if(f&&f.areas.some(a=>areaDisplayName(a)===ar||a.name===ar||a.jp_name===ar)){fl=fid;break;}
+  }
   state.checkedIn=true; state.ciFloor=fl; state.ciArea=ar; state.ciType=document.getElementById("ciType").value;
-  const a=getAreaByName(fl,ar);
+  const a=getAreaByName(fl,ar)||FLOORS.find(f=>f.id===fl)?.areas.find(x=>areaDisplayName(x)===ar);
   if(a){a.pct=Math.max(0,(a.pct||50)-8);a.upd="1";a.reports++;a.conf="high";recalcSt(a);}
   addPts(5,(lang==="ja"?"チェックイン":"Check In")+" · "+fl+" "+ar);
   if(state.lsSoon) addPts(3,(lang==="ja"?"Leaving Soon shared":"Leaving Soon shared"));
@@ -1392,11 +1466,12 @@ document.getElementById("rptFree").addEventListener("click",()=>{
   showToast(t("toast_free")); renderHome(); renderMap();
 });
 document.getElementById("ciDoCheckOut").addEventListener("click",()=>{
-  const a=getAreaByName(state.ciFloor,state.ciArea);
+  const a=getAreaByName(state.ciFloor,state.ciArea)||FLOORS.find(f=>f.id===state.ciFloor)?.areas.find(x=>areaDisplayName(x)===state.ciArea);
   if(a){a.pct=Math.min(100,(a.pct||50)+10);a.upd="1";a.conf="high";recalcSt(a);}
   addPts(5,(lang==="ja"?"チェックアウト":"Check Out")+" · "+state.ciFloor+" "+state.ciArea);
   state.checkedIn=false; updateCIUI(); setCIStep(1);
-  document.getElementById("ciFloor").value="";
+  // チェックボックスをリセット
+  document.querySelectorAll(".floor-cb").forEach(cb=>cb.checked=false);
   document.getElementById("ciArea").innerHTML=`<option value="">${t("ci_select_area_first")}</option>`;
   showToast(t("toast_co")); renderHome(); renderMap();
 });
@@ -1432,11 +1507,11 @@ function runRec(){
   for(const r of RULES){ if(r.keys.some(k=>q.includes(k))){ pref=r.pref; break; } }
   const scored=scoreAreas(pref); const best=scored[0]; if(!best) return;
   const a=best.a; const f=best.floor; const sm=ST[a.st]||ST.unknown;
-  document.getElementById("recName").textContent=f.id+" · "+a.name;
+  document.getElementById("recName").textContent=f.id+" · "+areaDisplayName(a);
   const rb=document.getElementById("recBadge"); rb.className="badge "+sm.bc; rb.textContent=stLabel(a.st);
   const reasons=[];
   if(a.pct!==null&&a.pct>=60) reasons.push(t("rec_reason_pct",{pct:a.pct}));
-  if(a.tags.length) reasons.push(t("rec_reason_tags",{tags:a.tags.join(" / ")}));
+  if(a.tags.length) reasons.push(t("rec_reason_tags",{tags:a.tags.map(tg=>tagLabel(tg)).join(" / ")}));
   reasons.push(t("rec_reason_upd",{upd:updText(a.upd),conf:confLabel(a.conf)}));
   if(a.reports>=4) reasons.push(t("rec_reason_reports",{n:a.reports}));
   if(pref==="high") reasons.push(t("rec_reason_high",{floor:f.id}));
@@ -1447,7 +1522,7 @@ function runRec(){
   document.getElementById("altList").innerHTML=alts.map(s=>{
     const as=ST[s.a.st]||ST.unknown;
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)">
-      <div><div style="font-size:13px;font-weight:700">${s.floor.id} · ${s.a.name}</div>
+      <div><div style="font-size:13px;font-weight:700">${s.floor.id} · ${areaDisplayName(s.a)}</div>
       <div style="font-size:11px;color:var(--muted)">${s.a.pct!==null?s.a.pct+"% · ":""}${updText(s.a.upd)}</div></div>
       <span class="badge ${as.bc}">${stLabel(s.a.st)}</span>
     </div>`;
@@ -1500,6 +1575,7 @@ document.querySelectorAll("[data-lang]").forEach(b=>{
 });
 document.getElementById("mlJP").addEventListener("click",()=>setLang("ja"));
 document.getElementById("mlEN").addEventListener("click",()=>setLang("en"));
+bindFloorCBs();
 
 // ═══════════════════════════════════════
 //  INIT
