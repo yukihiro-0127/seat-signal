@@ -174,6 +174,26 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .btn-co{background:transparent;border:2px solid var(--blue);color:var(--blue);margin-top:12px;font-size:15px;padding:13px;position:relative;z-index:1}
 .btn-co:hover{background:var(--blue-bg)}
 
+/* Step3 候補エリアカード */
+.area-candidate-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.area-candidate{display:flex;align-items:stretch;border:2px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;transition:all .15s;overflow:hidden;position:relative}
+.area-candidate:hover{border-color:var(--blue);background:var(--blue-bg)}
+.area-candidate.selected{border-color:var(--blue);background:var(--blue-bg)}
+.area-candidate .ac-left{width:5px;flex-shrink:0}
+.area-candidate .ac-body{flex:1;padding:10px 12px}
+.area-candidate .ac-header{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px}
+.area-candidate .ac-name{font-size:13px;font-weight:700;color:var(--text)}
+.area-candidate .ac-floor{font-size:11px;color:var(--muted);white-space:nowrap}
+.area-candidate .ac-status{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.area-candidate .ac-pct{font-size:13px;font-weight:700}
+.area-candidate .ac-bar{flex:1;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;max-width:80px}
+.area-candidate .ac-bar-fill{height:100%;border-radius:3px}
+.area-candidate .ac-meta{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.area-candidate .ac-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.area-candidate .ac-tag{background:var(--blue-bg);color:#0043ce;border-radius:20px;padding:1px 7px;font-size:10px}
+.area-candidate .ac-check{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--blue);flex-shrink:0;background:#fff}
+.area-candidate.selected .ac-check{background:var(--blue);color:#fff}
+.ac-no-result{text-align:center;padding:20px;color:var(--muted);font-size:13px}
 /* 席タイプ ラジオボタングリッド */
 .type-radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
 @media(min-width:480px){.type-radio-grid{grid-template-columns:repeat(3,1fr)}}
@@ -516,6 +536,8 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
           <div class="step" id="st2">2</div>
           <div class="step-line" id="sl2"></div>
           <div class="step" id="st3">3</div>
+          <div class="step-line" id="sl3"></div>
+          <div class="step" id="st4">4</div>
         </div>
         <div class="card" id="ciStep1Panel">
           <div class="card-title" data-i18n="ci_step1">Step 1 — どこにいますか？</div>
@@ -589,8 +611,19 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <button class="btn btn-p" id="ciNext2" data-i18n="btn_next">次へ →</button>
           </div>
         </div>
+        <!-- Step 3: 候補エリア確認 -->
         <div class="card" id="ciStep3Panel" style="display:none">
-          <div class="card-title" data-i18n="ci_step3">Step 3 — 利用時間 &amp; ステータス</div>
+          <div class="card-title" data-i18n="ci_step3">Step 3 — 候補エリアを選ぶ</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:8px" data-i18n="ci_step3_desc">条件にマッチするエリアです。タップして選択してください。</p>
+          <div class="area-candidate-list" id="ciCandidateList"></div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-o" id="ciBack2" style="margin-top:0" data-i18n="btn_back">← 戻る</button>
+            <button class="btn btn-p" id="ciNext3" data-i18n="btn_next">次へ →</button>
+          </div>
+        </div>
+        <!-- Step 4: 利用時間 & ステータス -->
+        <div class="card" id="ciStep4Panel" style="display:none">
+          <div class="card-title" data-i18n="ci_step4">Step 4 — 利用時間 &amp; ステータス</div>
           <div class="fg">
             <label><span data-i18n="ci_duration">利用予定時間</span>: <span id="durVal" style="color:var(--blue);font-weight:700">60<span data-i18n="min">分</span></span></label>
             <input type="range" id="ciDur" min="15" max="240" step="15" value="60"/>
@@ -600,7 +633,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <button class="tgl" id="lsTgl"></button>
           </div>
           <div style="display:flex;gap:8px;margin-top:12px">
-            <button class="btn btn-o" id="ciBack2" style="margin-top:0" data-i18n="btn_back">← 戻る</button>
+            <button class="btn btn-o" id="ciBack3" style="margin-top:0" data-i18n="btn_back">← 戻る</button>
             <button class="btn btn-p" id="ciDoCheckIn" data-i18n="ci_do_checkin">チェックイン ✓ +5pts</button>
           </div>
         </div>
@@ -822,7 +855,12 @@ const I18N = {
     map_footer:"タップでエリア詳細 · データは匿名集計のみ",
     ci_step1:"ステップ 1 — どこにいますか？",
     ci_step2:"ステップ 2 — 席タイプ",
-    ci_step3:"ステップ 3 — 利用時間 & ステータス",
+    ci_step3:"ステップ 3 — 候補エリアを選ぶ",
+    ci_step3_desc:"条件にマッチするエリアです。タップして選択してください。",
+    ci_step3_no_result:"条件に近いエリアが見つかりませんでした。すべてのエリアを表示します。",
+    ci_step4:"ステップ 4 — 利用時間 & ステータス",
+    ci_cand_avail:"空席率",
+    ci_cand_updated:"更新",
     ci_floor:"フロア（複数選択可）", ci_area:"エリア", ci_type:"席タイプ",
     ci_select_floor:"フロアを選択してください", ci_select_area_first:"先にフロアを選んでください",
     ci_type_any:"指定なし",
@@ -935,7 +973,12 @@ const I18N = {
     map_footer:"Tap an area for details · Data is anonymized",
     ci_step1:"Step 1 — Where are you?",
     ci_step2:"Step 2 — Seat Type",
-    ci_step3:"Step 3 — Duration & Status",
+    ci_step3:"Step 3 — Choose an Area",
+    ci_step3_desc:"Areas matching your preferences. Tap to select.",
+    ci_step3_no_result:"No exact match found. Showing all areas.",
+    ci_step4:"Step 4 — Duration & Status",
+    ci_cand_avail:"Vacancy",
+    ci_cand_updated:"Updated",
     ci_floor:"Floor", ci_area:"Area", ci_type:"Seat Type",
     ci_select_floor:"Select floor", ci_select_area_first:"Select a floor first",
     ci_type_any:"Any / Not sure",
@@ -1651,15 +1694,129 @@ document.getElementById("powerTgl").addEventListener("click",function(){
 
 function setCIStep(n){
   state.ciStep=n;
-  [1,2,3].forEach(i=>{
-    document.getElementById("ciStep"+i+"Panel").style.display=i===n?"block":"none";
+  [1,2,3,4].forEach(i=>{
+    const panel=document.getElementById("ciStep"+i+"Panel");
+    if(panel) panel.style.display=i===n?"block":"none";
     const s=document.getElementById("st"+i);
-    if(i<n){s.className="step done";s.textContent="✓";}
-    else if(i===n){s.className="step active";s.textContent=i;}
-    else{s.className="step";s.textContent=i;}
-    if(i<3) document.getElementById("sl"+i).className="step-line"+(i<n?" done":"");
+    if(s){
+      if(i<n){s.className="step done";s.textContent="✓";}
+      else if(i===n){s.className="step active";s.textContent=i;}
+      else{s.className="step";s.textContent=i;}
+    }
+    if(i<4){const sl=document.getElementById("sl"+i);if(sl) sl.className="step-line"+(i<n?" done":"");}
+  });
+  if(n===3) renderCandidates();
+}
+
+// ── Step3: 候補エリアをレンダリング ──────────────────────────
+function renderCandidates(){
+  const selFloors=getSelectedFloors();
+  const checkedR=document.querySelector('input[name="ciTypeR"]:checked');
+  const typeVal=checkedR?checkedR.value:"any";
+  const needPower=state.ciPower;
+
+  // 対象フロアの全エリアを集める
+  let pool=[];
+  selFloors.forEach(fid=>{
+    const f=FLOORS.find(x=>x.id===fid);
+    if(f) f.areas.forEach(a=>pool.push({floor:fid,area:a}));
+  });
+
+  // スコアリング：条件マッチ度 + 空席率 + 信頼度
+  pool.forEach(item=>{
+    const a=item.area;
+    let score=0;
+    // 席タイプマッチ
+    if(typeVal!=="any"){
+      const tagMap={"Monitor":"Monitor","Quiet":"Quiet","Team-friendly":"Team-friendly",
+        "Short stay":"Short stay","Standing desk":"Standing desk","Phone booth":"Phone booth"};
+      if(a.tags.some(tg=>tg===typeVal||(tagMap[typeVal]&&tg.includes(tagMap[typeVal])))) score+=30;
+    } else { score+=10; }
+    // 電源マッチ
+    if(needPower && a.tags.some(tg=>tg==="Power outlet")) score+=20;
+    else if(!needPower) score+=5;
+    // 空席率（高いほど良い）
+    if(a.pct!=null) score+=Math.round(a.pct*0.4);
+    // 信頼度
+    if(a.conf==="high") score+=15;
+    else if(a.conf==="medium") score+=7;
+    // unknown はスコア低め
+    if(a.st==="unknown") score-=20;
+    item.score=score;
+  });
+
+  // スコア降順・上位8件
+  pool.sort((x,y)=>y.score-x.score);
+  const top=pool.slice(0,8);
+
+  // 既存選択をリセット
+  state._candSelected=null;
+
+  const list=document.getElementById("ciCandidateList");
+  if(!list) return;
+  if(top.length===0){
+    list.innerHTML=`<div class="ac-no-result">${t("ci_step3_no_result")}</div>`;
+    return;
+  }
+
+  // スコアトップが条件にマッチしていなければ「全エリア表示」メッセージ
+  const firstMatched=typeVal==="any"||top[0].score>=(typeVal!=="any"?30:0);
+  if(!firstMatched){
+    list.innerHTML=`<div class="ac-no-result" style="margin-bottom:4px">${t("ci_step3_no_result")}</div>`+renderCandidateCards(top);
+  } else {
+    list.innerHTML=renderCandidateCards(top);
+  }
+
+  // カードクリックで選択
+  list.querySelectorAll(".area-candidate").forEach(card=>{
+    card.addEventListener("click",()=>{
+      list.querySelectorAll(".area-candidate").forEach(c=>c.classList.remove("selected"));
+      card.classList.add("selected");
+      card.querySelector(".ac-check").textContent="✓";
+      list.querySelectorAll(".area-candidate:not(.selected) .ac-check").forEach(c=>c.textContent="");
+      state._candSelected={floor:card.dataset.floor, area:card.dataset.area};
+      // Step1のフロア・エリアも更新しておく
+      document.querySelectorAll(".floor-cb").forEach(cb=>{ cb.checked=cb.value===card.dataset.floor; });
+      updateAreaSel();
+      document.getElementById("ciArea").value=card.dataset.area;
+    });
   });
 }
+
+function renderCandidateCards(items){
+  return items.map(item=>{
+    const a=item.area;
+    const sc=STATUS_COLORS[a.st]||STATUS_COLORS.unknown;
+    const pctStr=a.pct!=null?a.pct+"%":"—";
+    const stLabel={available:t("st_available")||"Available",moderate:t("st_moderate")||"Moderate",
+      busy:t("st_busy")||"Busy",almostfull:t("st_almostfull")||"Almost Full",unknown:t("st_unknown")||"Unknown"}[a.st]||a.st;
+    const tagHtml=a.tags.slice(0,3).map(tg=>`<span class="ac-tag">${tagLabel(tg)}</span>`).join("");
+    const updStr=lang==="ja"?a.upd+"分前":a.upd+"min ago";
+    const confStr={high:t("conf_high")||"High",medium:t("conf_medium")||"Medium",low:t("conf_low")||"Low"}[a.conf]||a.conf;
+    const areaName=areaDisplayName(a);
+    return `<div class="area-candidate" data-floor="${item.floor}" data-area="${areaName}">
+      <div class="ac-left" style="background:${sc.main}"></div>
+      <div class="ac-body">
+        <div class="ac-header">
+          <span class="ac-name">${areaName}</span>
+          <span class="ac-floor">${item.floor}</span>
+        </div>
+        <div class="ac-status">
+          <span class="ac-pct" style="color:${sc.main}">${pctStr}</span>
+          <div class="ac-bar"><div class="ac-bar-fill" style="width:${a.pct??0}%;background:${sc.main}"></div></div>
+          <span style="font-size:11px;color:${sc.main};font-weight:600">${stLabel}</span>
+        </div>
+        <div class="ac-meta">
+          <span>🕐 ${t("ci_cand_updated")} ${updStr}</span>
+          <span>· ${confStr}</span>
+        </div>
+        <div class="ac-tags">${tagHtml}</div>
+      </div>
+      <div class="ac-check"></div>
+    </div>`;
+  }).join("");
+}
+
 document.getElementById("ciNext1").addEventListener("click",()=>{
   if(getSelectedFloors().length===0||!document.getElementById("ciArea").value){ showToast(t("toast_select")); return; }
   setCIStep(2);
@@ -1667,6 +1824,18 @@ document.getElementById("ciNext1").addEventListener("click",()=>{
 document.getElementById("ciBack1").addEventListener("click",()=>setCIStep(1));
 document.getElementById("ciNext2").addEventListener("click",()=>setCIStep(3));
 document.getElementById("ciBack2").addEventListener("click",()=>setCIStep(2));
+document.getElementById("ciNext3").addEventListener("click",()=>{
+  // 選択中のカードがある場合は反映
+  if(state._candSelected){
+    document.querySelectorAll(".floor-cb").forEach(cb=>{ cb.checked=cb.value===state._candSelected.floor; });
+    updateAreaSel();
+    document.getElementById("ciArea").value=state._candSelected.area;
+  } else if(!document.getElementById("ciArea").value){
+    showToast(t("toast_select")); return;
+  }
+  setCIStep(4);
+});
+document.getElementById("ciBack3").addEventListener("click",()=>setCIStep(3));
 
 document.getElementById("ciDoCheckIn").addEventListener("click",()=>{
   const selFloors=getSelectedFloors();
@@ -1681,7 +1850,6 @@ document.getElementById("ciDoCheckIn").addEventListener("click",()=>{
   // ラジオボタンから席タイプ取得
   const checkedR=document.querySelector('input[name="ciTypeR"]:checked');
   const typeVal=checkedR?checkedR.value:"any";
-  // 電源が必要な場合は "Power outlet" をタグに追加
   state.checkedIn=true; state.ciFloor=fl; state.ciArea=ar;
   state.ciType=typeVal; state.ciPower=state.ciPower||false;
   const a=getAreaByName(fl,ar)||FLOORS.find(f=>f.id===fl)?.areas.find(x=>areaDisplayName(x)===ar);
@@ -1707,7 +1875,7 @@ document.getElementById("ciDoCheckOut").addEventListener("click",()=>{
   const a=getAreaByName(state.ciFloor,state.ciArea)||FLOORS.find(f=>f.id===state.ciFloor)?.areas.find(x=>areaDisplayName(x)===state.ciArea);
   if(a){a.pct=Math.min(100,(a.pct||50)+10);a.upd="1";a.conf="high";recalcSt(a);}
   addPts(5,(lang==="ja"?"チェックアウト":"Check Out")+" · "+state.ciFloor+" "+state.ciArea);
-  state.checkedIn=false; updateCIUI(); setCIStep(1);
+  state.checkedIn=false; state._candSelected=null; updateCIUI(); setCIStep(1);
   // フロアCB・エリア・席タイプ・電源をリセット
   document.querySelectorAll(".floor-cb").forEach(cb=>cb.checked=false);
   document.getElementById("ciArea").innerHTML=`<option value="">${t("ci_select_area_first")}</option>`;
