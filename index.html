@@ -170,6 +170,22 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .btn-d{background:var(--red);color:#fff;margin-top:8px;position:relative;z-index:1}
 .btn-o{background:transparent;border:1px solid var(--blue);color:var(--blue);margin-top:8px}
 .btn-o:hover{background:var(--blue-bg)}
+/* チェックアウト: 青枠 + やや強調 */
+.btn-co{background:transparent;border:2px solid var(--blue);color:var(--blue);margin-top:12px;font-size:15px;padding:13px;position:relative;z-index:1}
+.btn-co:hover{background:var(--blue-bg)}
+
+/* 席タイプ ラジオボタングリッド */
+.type-radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
+@media(min-width:480px){.type-radio-grid{grid-template-columns:repeat(3,1fr)}}
+.type-radio-label{display:block;cursor:pointer}
+.type-radio-label input[type=radio]{display:none}
+.type-radio-label span{display:flex;align-items:center;justify-content:center;gap:4px;padding:9px 6px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:600;color:var(--muted);background:var(--white);text-align:center;transition:all .15s;line-height:1.3;min-height:48px}
+.type-radio-label input:checked+span{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.type-radio-label:hover span{border-color:var(--blue);color:var(--blue)}
+
+/* 電源トグル行 */
+.power-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;margin-top:12px;background:var(--surface);border-radius:6px;border:1.5px solid var(--border);gap:12px}
+.power-toggle-row.on{border-color:var(--blue);background:var(--blue-bg)}
 /* FLOOR CHECKBOX GRID */
 .floor-cb-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
 .floor-cb-label{display:flex;align-items:center;justify-content:center;gap:0;cursor:pointer;padding:0}
@@ -526,20 +542,49 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         </div>
         <div class="card" id="ciStep2Panel" style="display:none">
           <div class="card-title" data-i18n="ci_step2">Step 2 — 席タイプ</div>
+          <!-- 席タイプ ラジオボタングリッド -->
           <div class="fg">
             <label data-i18n="ci_type">席タイプ</label>
-            <select id="ciType">
-              <option value="any" data-i18n="ci_type_any">不明 / 指定なし</option>
-              <option value="Monitor" data-i18n="ci_type_monitor">モニター席</option>
-              <option value="Quiet" data-i18n="ci_type_quiet">静かな席</option>
-              <option value="Team-friendly" data-i18n="ci_type_team">チーム席</option>
-              <option value="Power outlet" data-i18n="ci_type_power">電源あり</option>
-              <option value="Short stay" data-i18n="ci_type_short">短時間利用</option>
-              <option value="Standing desk" data-i18n="ci_type_standing">スタンディング</option>
-              <option value="Phone booth" data-i18n="ci_type_phone">電話ブース</option>
-            </select>
+            <div class="type-radio-grid" id="ciTypeGrid">
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="any" checked>
+                <span data-i18n="ci_type_any">指定なし</span>
+              </label>
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="Monitor">
+                <span>🖥 <span data-i18n="ci_type_monitor">モニター席</span></span>
+              </label>
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="Quiet">
+                <span>🔇 <span data-i18n="ci_type_quiet">静かな席</span></span>
+              </label>
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="Team-friendly">
+                <span>👥 <span data-i18n="ci_type_team">チーム席</span></span>
+              </label>
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="Short stay">
+                <span>⏱ <span data-i18n="ci_type_short">短時間利用</span></span>
+              </label>
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="Standing desk">
+                <span>🧍 <span data-i18n="ci_type_standing">スタンディング</span></span>
+              </label>
+              <label class="type-radio-label">
+                <input type="radio" name="ciTypeR" value="Phone booth">
+                <span>📞 <span data-i18n="ci_type_phone">電話ブース</span></span>
+              </label>
+            </div>
           </div>
-          <div style="display:flex;gap:8px">
+          <!-- 電源 — 別途トグル -->
+          <div class="power-toggle-row">
+            <div>
+              <div style="font-size:13px;font-weight:600">⚡ <span data-i18n="ci_power_label">電源コンセントが必要</span></div>
+              <div style="font-size:11px;color:var(--muted)" data-i18n="ci_power_sub">席タイプを問わず選択できます</div>
+            </div>
+            <button class="tgl" id="powerTgl"></button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px">
             <button class="btn btn-o" id="ciBack1" style="margin-top:0" data-i18n="btn_back">← 戻る</button>
             <button class="btn btn-p" id="ciNext2" data-i18n="btn_next">次へ →</button>
           </div>
@@ -584,7 +629,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <button class="btn btn-o" style="padding:9px;font-size:12px;margin-top:0" id="rptFree" data-i18n="ci_report_free">🟢 空いてきた +3pts</button>
           </div>
         </div>
-        <button class="btn btn-d" id="ciDoCheckOut" data-i18n="ci_checkout">チェックアウト +5pts</button>
+        <button class="btn btn-co" id="ciDoCheckOut" data-i18n="ci_checkout">チェックアウト +5pts</button>
         <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px" data-i18n="ci_privacy">匿名データのみ · 個人は特定されません</p>
       </div>
       </div><!-- /ci-layout -->
@@ -781,6 +826,7 @@ const I18N = {
     ci_type_team:"チーム席", ci_type_power:"電源あり",
     ci_type_short:"短時間利用", ci_type_standing:"スタンディング",
     ci_type_phone:"電話ブース",
+    ci_power_label:"⚡ 電源コンセントが必要", ci_power_sub:"席タイプを問わず選択できます",
     ci_duration:"利用予定時間", min:"分",
     ci_leaving_soon:"🚶 もうすぐ離席（15分以内）",
     ci_do_checkin:"チェックイン ✓  +5pt",
@@ -959,6 +1005,7 @@ const I18N = {
     ci_type_team:"Team seat", ci_type_power:"Power outlet",
     ci_type_short:"Short stay", ci_type_standing:"Standing desk",
     ci_type_phone:"Phone booth",
+    ci_power_label:"⚡ Power outlet needed", ci_power_sub:"Can be combined with any seat type",
     floor_select_hint:"Select floor(s)",
     ci_floor_selected:"{n} floor(s) selected",
     rec_reason_pct:"Current vacancy is {pct}% — relatively open",
@@ -1005,10 +1052,10 @@ function applyI18n(){
   // sidebar subtitle
   const sb=document.getElementById("sidebarSub");
   if(sb) sb.textContent=t("sidebar_sub");
-  // ciType select options — data-i18n driven update
-  document.querySelectorAll("#ciType option[data-i18n]").forEach(opt=>{
-    const v=I18N[lang][opt.dataset.i18n]||I18N.ja[opt.dataset.i18n];
-    if(v!==undefined) opt.textContent=v;
+  // 席タイプ ラジオラベルを言語切替時に更新
+  document.querySelectorAll("#ciTypeGrid span[data-i18n]").forEach(el=>{
+    const v=I18N[lang][el.dataset.i18n]||I18N.ja[el.dataset.i18n];
+    if(v!==undefined) el.textContent=v;
   });
   // ciArea の初期optionテキストを言語に合わせて更新
   const ca=document.getElementById("ciArea");
@@ -1122,7 +1169,7 @@ const CF={high:"conf_high",medium:"conf_medium",low:"conf_low"};
 
 const state={
   points:45, checkedIn:false,
-  ciFloor:null, ciArea:null, ciType:null, ciDur:60, lsSoon:false,
+  ciFloor:null, ciArea:null, ciType:null, ciDur:60, lsSoon:false, ciPower:false,
   ciStep:1, mapFloor:"21F",
   history:[
     {a:"Check In · 21F Focus Zone",  p:5, t:"Today 09:15"},
@@ -1589,6 +1636,10 @@ document.getElementById("ciDur").addEventListener("input",function(){
 });
 document.getElementById("lsTgl").addEventListener("click",function(){ this.classList.toggle("on"); state.lsSoon=this.classList.contains("on"); });
 document.getElementById("lsTgl2").addEventListener("click",function(){ this.classList.toggle("on"); state.lsSoon=this.classList.contains("on"); });
+document.getElementById("powerTgl").addEventListener("click",function(){
+  this.classList.toggle("on"); state.ciPower=this.classList.contains("on");
+  document.querySelector(".power-toggle-row").classList.toggle("on", state.ciPower);
+});
 
 function setCIStep(n){
   state.ciStep=n;
@@ -1619,7 +1670,12 @@ document.getElementById("ciDoCheckIn").addEventListener("click",()=>{
     const f=FLOORS.find(x=>x.id===fid);
     if(f&&f.areas.some(a=>areaDisplayName(a)===ar||a.name===ar||a.jp_name===ar)){fl=fid;break;}
   }
-  state.checkedIn=true; state.ciFloor=fl; state.ciArea=ar; state.ciType=document.getElementById("ciType").value;
+  // ラジオボタンから席タイプ取得
+  const checkedR=document.querySelector('input[name="ciTypeR"]:checked');
+  const typeVal=checkedR?checkedR.value:"any";
+  // 電源が必要な場合は "Power outlet" をタグに追加
+  state.checkedIn=true; state.ciFloor=fl; state.ciArea=ar;
+  state.ciType=typeVal; state.ciPower=state.ciPower||false;
   const a=getAreaByName(fl,ar)||FLOORS.find(f=>f.id===fl)?.areas.find(x=>areaDisplayName(x)===ar);
   if(a){a.pct=Math.max(0,(a.pct||50)-8);a.upd="1";a.reports++;a.conf="high";recalcSt(a);}
   addPts(5,(lang==="ja"?"チェックイン":"Check In")+" · "+fl+" "+ar);
@@ -1644,9 +1700,14 @@ document.getElementById("ciDoCheckOut").addEventListener("click",()=>{
   if(a){a.pct=Math.min(100,(a.pct||50)+10);a.upd="1";a.conf="high";recalcSt(a);}
   addPts(5,(lang==="ja"?"チェックアウト":"Check Out")+" · "+state.ciFloor+" "+state.ciArea);
   state.checkedIn=false; updateCIUI(); setCIStep(1);
-  // チェックボックスをリセット
+  // フロアCB・エリア・席タイプ・電源をリセット
   document.querySelectorAll(".floor-cb").forEach(cb=>cb.checked=false);
   document.getElementById("ciArea").innerHTML=`<option value="">${t("ci_select_area_first")}</option>`;
+  const anyR=document.querySelector('input[name="ciTypeR"][value="any"]');
+  if(anyR){anyR.checked=true;}
+  const pTgl=document.getElementById("powerTgl");
+  pTgl.classList.remove("on"); state.ciPower=false;
+  document.querySelector(".power-toggle-row").classList.remove("on");
   showToast(t("toast_co")); renderHome(); renderMap();
 });
 function updateCIUI(){
