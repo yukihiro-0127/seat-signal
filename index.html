@@ -635,22 +635,9 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <button class="btn btn-p" id="ciNext2" data-i18n="btn_next">次へ →</button>
           </div>
         </div>
-        <!-- Step 3: エリア選択 → 席番号選択 -->
+        <!-- Step 3: 席番号選択 -->
         <div class="card" id="ciStep3Panel" style="display:none">
-          <!-- 3-A: エリア一覧 -->
-          <div id="ciStep3A">
-            <div class="card-title" data-i18n="ci_step3">ステップ 3 — エリアを選ぶ</div>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:8px" data-i18n="ci_step3_desc">条件にマッチするエリアです。タップして席を確認してください。</p>
-            <div class="area-candidate-list" id="ciCandidateList"></div>
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <button class="btn btn-o" id="ciBack2" style="margin-top:0" data-i18n="btn_back">← 戻る</button>
-            </div>
-          </div>
-          <!-- 3-B: 席番号グリッド -->
-          <div id="ciStep3B" style="display:none">
-            <button class="step3-back-area" id="ciBack3A">
-              ← <span data-i18n="ci_step3b_back_area">エリア選択に戻る</span>
-            </button>
+          <div id="ciStep3B">
             <div class="card-title" data-i18n="ci_step3b_title">席を選んでください</div>
             <div id="ciAreaHeader" class="step3-area-header"></div>
             <div class="seat-grid" id="ciSeatGrid"></div>
@@ -660,6 +647,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
               <span><span class="sl-dot" style="border-color:#bbb;background:#f0f0f0"></span><span data-i18n="ci_seat_busy">使用中</span></span>
             </div>
             <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn btn-o" id="ciBack3A" style="margin-top:0" data-i18n="btn_back">← 戻る</button>
               <button class="btn btn-p" id="ciNext3" data-i18n="btn_next">次へ →</button>
             </div>
           </div>
@@ -1757,112 +1745,26 @@ function setCIStep(n){
     }
     if(i<4){const sl=document.getElementById("sl"+i);if(sl) sl.className="step-line"+(i<n?" done":"");}
   });
-  if(n===3){ show3A(); renderCandidates(); }
+  if(n===3){
+    // Step1で選択済みのエリアを使って直接席グリッドへ
+    const arName=document.getElementById("ciArea").value;
+    const selFloors=getSelectedFloors();
+    let flId=selFloors[0];
+    for(const fid of selFloors){
+      const f=FLOORS.find(x=>x.id===fid);
+      if(f&&f.areas.some(a=>areaDisplayName(a)===arName)){flId=fid;break;}
+    }
+    const f=FLOORS.find(x=>x.id===flId);
+    const aObj=f?.areas.find(a=>areaDisplayName(a)===arName);
+    if(aObj){ state._candSelected={floor:flId,area:arName}; renderSeatGrid(flId,aObj); }
+  }
 }
 
-// ── Step3 サブ画面切替 ──────────────────────────────────────
-function show3A(){
-  document.getElementById("ciStep3A").style.display="block";
-  document.getElementById("ciStep3B").style.display="none";
-}
 function show3B(floorId, areaObj){
-  document.getElementById("ciStep3A").style.display="none";
-  document.getElementById("ciStep3B").style.display="block";
   renderSeatGrid(floorId, areaObj);
 }
 
-// ── Step3-A: エリア候補リスト ───────────────────────────────
-function renderCandidates(){
-  const selFloors=getSelectedFloors();
-  const checkedR=document.querySelector('input[name="ciTypeR"]:checked');
-  const typeVal=checkedR?checkedR.value:"any";
-  const needPower=state.ciPower;
-
-  let pool=[];
-  selFloors.forEach(fid=>{
-    const f=FLOORS.find(x=>x.id===fid);
-    if(f) f.areas.forEach(a=>pool.push({floor:fid,area:a}));
-  });
-
-  pool.forEach(item=>{
-    const a=item.area; let score=0;
-    if(typeVal!=="any"){
-      if(a.tags.some(tg=>tg===typeVal)) score+=30;
-    } else { score+=10; }
-    if(needPower && a.tags.some(tg=>tg==="Power outlet")) score+=20;
-    else if(!needPower) score+=5;
-    if(a.pct!=null) score+=Math.round(a.pct*0.4);
-    if(a.conf==="high") score+=15; else if(a.conf==="medium") score+=7;
-    if(a.st==="unknown") score-=20;
-    item.score=score;
-  });
-  pool.sort((x,y)=>y.score-x.score);
-  const top=pool.slice(0,8);
-
-  state._candSelected=null; state._seatSelected=null;
-  const list=document.getElementById("ciCandidateList");
-  if(!list) return;
-  if(top.length===0){ list.innerHTML=`<div class="ac-no-result">${t("ci_step3_no_result")}</div>`; return; }
-
-  const firstMatched=typeVal==="any"||top[0].score>=(typeVal!=="any"?30:0);
-  list.innerHTML=(firstMatched?"":
-    `<div class="ac-no-result" style="margin-bottom:4px">${t("ci_step3_no_result")}</div>`
-  )+renderCandidateCards(top);
-
-  // カードタップ → 即 3-B（席グリッド）へ遷移
-  list.querySelectorAll(".area-candidate").forEach(card=>{
-    card.addEventListener("click",()=>{
-      const floorId=card.dataset.floor;
-      const areaName=card.dataset.area;
-      const f=FLOORS.find(x=>x.id===floorId);
-      const aObj=f?.areas.find(a=>areaDisplayName(a)===areaName);
-      if(!aObj) return;
-      state._candSelected={floor:floorId, area:areaName};
-      // Step1のセレクトも同期
-      document.querySelectorAll(".floor-cb").forEach(cb=>{ cb.checked=cb.value===floorId; });
-      updateAreaSel();
-      document.getElementById("ciArea").value=areaName;
-      show3B(floorId, aObj);
-    });
-  });
-}
-
-function renderCandidateCards(items){
-  return items.map(item=>{
-    const a=item.area;
-    const sc=STATUS_COLORS[a.st]||STATUS_COLORS.unknown;
-    const pctStr=a.pct!=null?a.pct+"%":"—";
-    const stLabel={available:t("st_available")||"Available",moderate:t("st_moderate")||"Moderate",
-      busy:t("st_busy")||"Busy",almostfull:t("st_almostfull")||"Almost Full",unknown:t("st_unknown")||"Unknown"}[a.st]||a.st;
-    const tagHtml=a.tags.slice(0,3).map(tg=>`<span class="ac-tag">${tagLabel(tg)}</span>`).join("");
-    const updStr=lang==="ja"?a.upd+"分前":a.upd+"min ago";
-    const confStr={high:t("conf_high")||"High",medium:t("conf_medium")||"Medium",low:t("conf_low")||"Low"}[a.conf]||a.conf;
-    const areaName=areaDisplayName(a);
-    // 矢印アイコン（タップで席グリッドへ）
-    return `<div class="area-candidate" data-floor="${item.floor}" data-area="${areaName}">
-      <div class="ac-left" style="background:${sc.main}"></div>
-      <div class="ac-body">
-        <div class="ac-header">
-          <span class="ac-name">${areaName}</span>
-          <span class="ac-floor">${item.floor}</span>
-        </div>
-        <div class="ac-status">
-          <span class="ac-pct" style="color:${sc.main}">${pctStr}</span>
-          <div class="ac-bar"><div class="ac-bar-fill" style="width:${a.pct??0}%;background:${sc.main}"></div></div>
-          <span style="font-size:11px;color:${sc.main};font-weight:600">${stLabel}</span>
-        </div>
-        <div class="ac-meta">
-          <span>🕐 ${t("ci_cand_updated")} ${updStr}</span>
-          <span>· ${confStr}</span>
-        </div>
-        <div class="ac-tags">${tagHtml}</div>
-      </div>
-      <div class="ac-check" style="font-size:16px;color:var(--muted)">›</div>
-    </div>`;
-  }).join("");
-}
-
-// ── Step3-B: 席番号グリッド ──────────────────────────────────
+// ── Step3: 席番号グリッド ──────────────────────────────────
 // エリアの空席率からデモ席データを動的生成
 function genSeats(areaObj){
   const pct=areaObj.pct??50;
@@ -1942,7 +1844,7 @@ document.getElementById("ciNext1").addEventListener("click",()=>{
 document.getElementById("ciBack1").addEventListener("click",()=>setCIStep(1));
 document.getElementById("ciNext2").addEventListener("click",()=>setCIStep(3));
 document.getElementById("ciBack2").addEventListener("click",()=>setCIStep(2));
-document.getElementById("ciBack3A").addEventListener("click",()=>show3A());
+document.getElementById("ciBack3A").addEventListener("click",()=>setCIStep(2));
 document.getElementById("ciNext3").addEventListener("click",()=>{
   if(!state._seatSelected){ showToast(t("ci_seat_selected_none")); return; }
   setCIStep(4);

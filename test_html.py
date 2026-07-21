@@ -32,15 +32,15 @@ for sl in [1, 2, 3]:
     if f'id="sl{sl}"' not in html:
         errors.append(f'FAIL: #sl{sl} step-line not found')
 
-# ── Step3 候補エリアUI ────────────────────────────────────────
-if 'id="ciCandidateList"' not in html:
-    errors.append("FAIL: #ciCandidateList not found")
-if 'renderCandidates' not in html:
-    errors.append("FAIL: renderCandidates() not found")
-if 'renderCandidateCards' not in html:
-    errors.append("FAIL: renderCandidateCards() not found")
-if 'area-candidate' not in html:
-    errors.append("FAIL: .area-candidate CSS not found")
+# ── Step3 席グリッドUI ────────────────────────────────────────
+if 'id="ciSeatGrid"' not in html:
+    errors.append("FAIL: #ciSeatGrid not found")
+if 'renderSeatGrid' not in html:
+    errors.append("FAIL: renderSeatGrid() not found")
+if 'genSeats' not in html:
+    errors.append("FAIL: genSeats() not found")
+if 'seat-grid' not in html:
+    errors.append("FAIL: .seat-grid CSS not found")
 if 'ciNext3' not in html:
     errors.append("FAIL: #ciNext3 button not found")
 if 'ciBack3' not in html:
