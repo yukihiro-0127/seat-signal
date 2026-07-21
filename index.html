@@ -16,7 +16,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 
   /* ── Status color map (single source of truth) ── */
   --st-av-main:#43A047;  --st-av-bg:#E8F5E9;  --st-av-border:#43A047;
-  --st-mo-main:#A77C12;  --st-mo-bg:#FFF8E1;  --st-mo-border:#F2C94C;
+  --st-mo-main:#A77C12;  --st-mo-bg:#FFF8E1;  --st-mo-border:#A77C12;
   --st-bu-main:#EF7D32;  --st-bu-bg:#FFF1E8;  --st-bu-border:#EF7D32;
   --st-af-main:#D32F2F;  --st-af-bg:#FDECEC;  --st-af-border:#D32F2F;
   --st-un-main:#8E8E8E;  --st-un-bg:#F3F4F6;  --st-un-border:#8E8E8E;
@@ -53,8 +53,12 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .topbar-lang button{padding:2px 7px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:11px;font-weight:600}
 .topbar-lang button.active{background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,.6)}
 
-.content{flex:1;padding:20px;width:100%;max-width:860px}
-.content.map-mode{max-width:100%}
+.content{flex:1;padding:20px;width:100%}
+.content.map-mode{padding:20px}
+/* 各画面の内側ラッパー — 画面種別ごとに max-width を制御 */
+.screen-inner{width:100%;max-width:900px}
+.screen-inner-wide{width:100%;max-width:1200px}
+.screen-inner-narrow{width:100%;max-width:560px;margin:0 auto}
 
 /* Screens */
 .screen{display:none}
@@ -98,6 +102,27 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 @media(min-width:1025px){
   .content{padding:24px 32px}
   .content.map-mode{padding:20px 24px}
+  .screen-inner{max-width:1000px}
+  .screen-inner-wide{max-width:100%}
+}
+/* チェックイン画面: 大画面で2カラム */
+.ci-layout{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){.ci-layout{grid-template-columns:1fr 1fr;align-items:start;gap:24px}}
+/* Find画面: 大画面で2カラム */
+.find-layout{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:900px){.find-layout{grid-template-columns:1fr 1fr;gap:20px;align-items:start}}
+/* Home画面: 大画面で床サマリーを広く */
+@media(min-width:900px){
+  .home-bottom{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:start}
+}
+/* Points画面: 大画面でルール左・履歴右 */
+.pts-bottom{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:900px){.pts-bottom{grid-template-columns:1fr 2fr;gap:20px;align-items:start}}
+/* Find: 結果カラムは常に表示（flex で高さ維持） */
+@media(min-width:900px){
+  .find-layout{align-items:start}
+  #recOut{display:block!important;min-height:0}
+  #recOut:empty,.find-layout #recOut[style*="display:none"]{visibility:hidden}
 }
 
 /* CARDS */
@@ -338,6 +363,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 
     <!-- ═══ HOME ═══ -->
     <div class="screen active" id="sc-home">
+      <div class="screen-inner">
       <div class="page-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--blue)"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
         <span data-i18n="nav_home">ホーム</span>
@@ -379,24 +405,28 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         </div>
       </div>
 
-      <!-- Floor summary -->
-      <div class="card">
-        <div class="card-title" data-i18n="home_floor_summary">フロア別サマリー</div>
-        <div id="fsSummary"></div>
-      </div>
-
-      <!-- Points -->
-      <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div>
-            <div class="card-title" style="margin-bottom:4px" data-i18n="nav_pts">Contribution Points</div>
-            <div style="font-size:32px;font-weight:700;color:var(--blue)" id="homePts">45</div>
-            <div style="font-size:11px;color:var(--muted)" data-i18n="pts_hint">Check-in +5 · Check-out +5 · Leaving Soon +3</div>
-          </div>
-          <div style="text-align:center"><div style="font-size:28px">🏅</div></div>
+      <div class="home-bottom">
+        <!-- Floor summary -->
+        <div class="card">
+          <div class="card-title" data-i18n="home_floor_summary">フロア別サマリー</div>
+          <div id="fsSummary"></div>
         </div>
-      </div>
+
+        <!-- Points -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div class="card-title" style="margin-bottom:4px" data-i18n="nav_pts">Contribution Points</div>
+              <div style="font-size:32px;font-weight:700;color:var(--blue)" id="homePts">45</div>
+              <div style="font-size:11px;color:var(--muted)" data-i18n="pts_hint">Check-in +5 · Check-out +5 · Leaving Soon +3</div>
+            </div>
+            <div style="text-align:center"><div style="font-size:28px">🏅</div></div>
+          </div>
+        </div>
+      </div><!-- /home-bottom -->
+
       <p style="font-size:11px;color:var(--muted);text-align:center;padding:4px 0 8px" data-i18n="privacy_footer">🔒 Location data is anonymized at area level. No individual tracking.</p>
+      </div><!-- /screen-inner -->
     </div>
 
     <!-- ═══ MAP ═══ -->
@@ -422,6 +452,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 
     <!-- ═══ CHECK-IN ═══ -->
     <div class="screen" id="sc-checkin">
+      <div class="screen-inner">
       <div class="page-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--blue)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
         <span data-i18n="nav_checkin">チェックイン</span>
@@ -430,7 +461,8 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.75 10.5h-1.5v-5h1.5v5zm0-6.5h-1.5V3.5h1.5V5z"/></svg>
         <span data-i18n="anon_notice">匿名エリアレベルの共有 — 個人データは収集しません</span>
       </div>
-      <div id="ciForm" style="max-width:520px">
+      <div class="ci-layout">
+      <div id="ciForm">
         <div class="steps">
           <div class="step active" id="st1">1</div>
           <div class="step-line" id="sl1"></div>
@@ -498,7 +530,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         </div>
       </div>
 
-      <div id="ciActive" style="display:none;max-width:520px">
+      <div id="ciActive" style="display:none">
         <div class="ci-banner">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--blue-dark)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           <div style="flex:1">
@@ -524,15 +556,19 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         <button class="btn btn-d" id="ciDoCheckOut" data-i18n="ci_checkout">チェックアウト +5pts</button>
         <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px" data-i18n="ci_privacy">匿名データのみ · 個人は特定されません</p>
       </div>
+      </div><!-- /ci-layout -->
+      </div><!-- /screen-inner -->
     </div>
 
     <!-- ═══ FIND ═══ -->
     <div class="screen" id="sc-find">
+      <div class="screen-inner-wide">
       <div class="page-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span data-i18n="nav_find">席を探す</span>
       </div>
-      <div style="max-width:680px">
+      <div class="find-layout">
+      <div>
         <div class="card">
           <div class="card-title">🤖 <span data-i18n="find_title">AI風おすすめエリア検索</span></div>
           <p style="font-size:12px;color:var(--muted);margin-bottom:9px" data-i18n="find_desc">希望条件を自由に入力してください。現在のデータからベストなエリアを提案します。</p>
@@ -542,7 +578,8 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
           </div>
           <div class="chips" id="findChips"></div>
         </div>
-        <div id="recOut" style="display:none">
+      </div><!-- /find-input col -->
+      <div id="recOut" style="display:none">
           <div class="rec-box card">
             <div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-weight:700;letter-spacing:.5px" data-i18n="rec_label">RECOMMENDATION</div>
             <div style="font-size:18px;font-weight:700;color:var(--blue-dark);margin-bottom:4px" id="recName"></div>
@@ -559,19 +596,23 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <div class="card-title" data-i18n="rec_alt">次点のおすすめ</div>
             <div id="altList"></div>
           </div>
-        </div>
-        <p style="font-size:11px;color:var(--muted);text-align:center;padding:4px 0 8px" data-i18n="find_footer">推薦は参考情報です。現地で確認をお願いします。</p>
-      </div>
+      </div><!-- /recOut col -->
+      </div><!-- /find-layout -->
+      <p style="font-size:11px;color:var(--muted);text-align:center;padding:4px 0 8px" data-i18n="find_footer">推薦は参考情報です。現地で確認をお願いします。</p>
+      </div><!-- /screen-inner-wide -->
     </div>
 
     <!-- ═══ POINTS ═══ -->
     <div class="screen" id="sc-pts">
+      <div class="screen-inner">
       <div class="page-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--blue)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
         <span data-i18n="nav_pts">Contribution Points</span>
       </div>
       <div class="pts-big" id="ptsBig">45</div>
       <div class="pts-sub" data-i18n="nav_pts">Contribution Points</div>
+      <div class="pts-bottom">
+      <div>
       <div class="card">
         <div class="card-title" data-i18n="pts_rules">ポイント獲得ルール</div>
         <div class="pts-grid">
@@ -581,6 +622,8 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
           <div class="pts-rule"><div class="n">+3</div><div class="l" data-i18n="pts_report">混雑報告</div></div>
         </div>
       </div>
+      </div>
+      <div>
       <div class="card">
         <div class="card-title" data-i18n="pts_history">アクティビティ履歴</div>
         <ul class="pts-hist" id="ptsHist"></ul>
@@ -591,6 +634,9 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
           <span style="font-size:11px;color:var(--muted)" data-i18n="pts_demo_note">デモ用ポイントです。BluePointsとは連携していません。</span>
         </div>
       </div>
+      </div><!-- /pts-bottom col2 -->
+      </div><!-- /pts-bottom -->
+      </div><!-- /screen-inner -->
     </div>
 
   </div><!-- /content -->
@@ -962,7 +1008,7 @@ FLOORS.forEach(f=>{FLOOR_AREAS[f.id]=f.areas.map(a=>a.name);});
 // ── Status color map — single source of truth (mirrors CSS :root variables) ──
 const STATUS_COLORS={
   available:{main:"#43A047", bg:"#E8F5E9", border:"#43A047"},
-  moderate: {main:"#A77C12", bg:"#FFF8E1", border:"#F2C94C"},
+  moderate: {main:"#A77C12", bg:"#FFF8E1", border:"#A77C12"},
   busy:     {main:"#EF7D32", bg:"#FFF1E8", border:"#EF7D32"},
   almostfull:{main:"#D32F2F",bg:"#FDECEC", border:"#D32F2F"},
   unknown:  {main:"#8E8E8E", bg:"#F3F4F6", border:"#8E8E8E"},
