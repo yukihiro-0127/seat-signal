@@ -103,24 +103,31 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
   .content{padding:20px 32px}
   .content.map-mode{padding:16px 24px}
 }
-/* チェックイン画面: 大画面で2カラム */
-.ci-layout{display:grid;grid-template-columns:1fr;gap:12px}
+/* ── チェックイン画面 ── */
+.ci-layout{display:grid;grid-template-columns:1fr;gap:12px;width:100%}
 @media(min-width:800px){.ci-layout{grid-template-columns:1fr 1fr;align-items:start;gap:24px}}
-/* Find画面: 大画面で2カラム */
-.find-layout{display:grid;grid-template-columns:1fr;gap:0}
-@media(min-width:800px){.find-layout{grid-template-columns:1fr 1fr;gap:20px;align-items:start}}
-/* Home画面: 大画面で床サマリーを広く */
+/* ciForm / ciActive はカラム幅いっぱいに */
+#ciForm,#ciActive{width:100%}
+#ciForm .card,#ciActive .card,#ciForm .steps,#ciActive .ci-banner{width:100%}
+/* ── Find画面 ── */
+.find-layout{display:grid;grid-template-columns:1fr;gap:12px;width:100%}
+@media(min-width:800px){.find-layout{grid-template-columns:1fr 1fr;gap:24px;align-items:start}}
+.find-layout>div{width:100%;min-width:0}
+/* ── Home画面: 大画面で床サマリーを広く ── */
 @media(min-width:800px){
   .home-bottom{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:start}
 }
-/* Points画面: 大画面でルール左・履歴右 */
-.pts-bottom{display:grid;grid-template-columns:1fr;gap:0}
+/* ── Points画面: 大画面でルール左・履歴右 ── */
+.pts-bottom{display:grid;grid-template-columns:1fr;gap:0;width:100%}
 @media(min-width:800px){.pts-bottom{grid-template-columns:1fr 2fr;gap:20px;align-items:start}}
-/* Find: 大画面では結果カラムを常に確保 */
+/* ── Find: 大画面では結果カラムを常に確保 ── */
 @media(min-width:800px){
-  #recOut{display:block!important}
+  #recOut{display:block!important;width:100%}
   #recOut:not([data-has-result]){visibility:hidden}
 }
+/* ── カード・フォーム要素の幅をコンテナに追従 ── */
+.card{width:100%}
+.fg select,.fg input[type=range],.rec-input-wrap,.rec-input,.btn{width:100%}
 
 /* CARDS */
 .card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px}
@@ -304,7 +311,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 
 <!-- ── SIDEBAR (PC / Tablet) ── -->
 <aside class="sidebar">
-  <div class="sidebar-logo">
+  <div class="sidebar-logo" id="sidebarLogo" style="cursor:pointer" title="Home">
     <h1>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       <span class="nav-label">Seat Signal</span>
@@ -361,7 +368,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 
   <!-- Mobile header -->
   <div class="mobile-header">
-    <h1>
+    <h1 id="mobileLogoBtn" style="cursor:pointer">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Seat Signal
     </h1>
@@ -1747,6 +1754,10 @@ document.querySelectorAll("[data-lang]").forEach(b=>{
 document.getElementById("mlJP").addEventListener("click",()=>setLang("ja"));
 document.getElementById("mlEN").addEventListener("click",()=>setLang("en"));
 bindFloorCBs();
+
+// ── ロゴクリック → ホームへ ──────────────────────────────────────────────
+document.getElementById("sidebarLogo").addEventListener("click", ()=>switchScreen("home"));
+document.getElementById("mobileLogoBtn").addEventListener("click", ()=>switchScreen("home"));
 
 // ── QR DEMO MODAL ──────────────────────────────────────────────────────────
 function openQR(){
