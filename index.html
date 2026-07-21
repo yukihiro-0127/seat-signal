@@ -53,12 +53,12 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 .topbar-lang button{padding:2px 7px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:11px;font-weight:600}
 .topbar-lang button.active{background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,.6)}
 
-.content{flex:1;padding:20px;width:100%}
-.content.map-mode{padding:20px}
-/* 各画面の内側ラッパー — 画面種別ごとに max-width を制御 */
-.screen-inner{width:100%;max-width:900px}
-.screen-inner-wide{width:100%;max-width:1200px}
-.screen-inner-narrow{width:100%;max-width:560px;margin:0 auto}
+.content{flex:1;padding:16px 24px;width:100%}
+.content.map-mode{padding:16px 20px}
+/* screen-inner: max-width なし、フル幅 */
+.screen-inner{width:100%}
+.screen-inner-wide{width:100%}
+.screen-inner-narrow{width:100%;max-width:600px}
 
 /* Screens */
 .screen{display:none}
@@ -100,29 +100,26 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
   .content{max-width:100%;padding:16px}
 }
 @media(min-width:1025px){
-  .content{padding:24px 32px}
-  .content.map-mode{padding:20px 24px}
-  .screen-inner{max-width:1000px}
-  .screen-inner-wide{max-width:100%}
+  .content{padding:20px 32px}
+  .content.map-mode{padding:16px 24px}
 }
 /* チェックイン画面: 大画面で2カラム */
 .ci-layout{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:900px){.ci-layout{grid-template-columns:1fr 1fr;align-items:start;gap:24px}}
+@media(min-width:800px){.ci-layout{grid-template-columns:1fr 1fr;align-items:start;gap:24px}}
 /* Find画面: 大画面で2カラム */
 .find-layout{display:grid;grid-template-columns:1fr;gap:0}
-@media(min-width:900px){.find-layout{grid-template-columns:1fr 1fr;gap:20px;align-items:start}}
+@media(min-width:800px){.find-layout{grid-template-columns:1fr 1fr;gap:20px;align-items:start}}
 /* Home画面: 大画面で床サマリーを広く */
-@media(min-width:900px){
+@media(min-width:800px){
   .home-bottom{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:start}
 }
 /* Points画面: 大画面でルール左・履歴右 */
 .pts-bottom{display:grid;grid-template-columns:1fr;gap:0}
-@media(min-width:900px){.pts-bottom{grid-template-columns:1fr 2fr;gap:20px;align-items:start}}
-/* Find: 結果カラムは常に表示（flex で高さ維持） */
-@media(min-width:900px){
-  .find-layout{align-items:start}
-  #recOut{display:block!important;min-height:0}
-  #recOut:empty,.find-layout #recOut[style*="display:none"]{visibility:hidden}
+@media(min-width:800px){.pts-bottom{grid-template-columns:1fr 2fr;gap:20px;align-items:start}}
+/* Find: 大画面では結果カラムを常に確保 */
+@media(min-width:800px){
+  #recOut{display:block!important}
+  #recOut:not([data-has-result]){visibility:hidden}
 }
 
 /* CARDS */
@@ -274,6 +271,28 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:4px;animation:pulse 2s infinite}
+
+/* QR CHECK-IN BUTTON */
+.btn-qr{display:flex;align-items:center;gap:8px;padding:11px 20px;background:var(--white);border:2px solid var(--blue);border-radius:6px;color:var(--blue);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-qr:hover{background:var(--blue-bg)}
+
+/* QR MODAL */
+.qr-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:800;align-items:center;justify-content:center}
+.qr-ov.open{display:flex}
+.qr-modal{background:#fff;border-radius:12px;padding:24px;width:92%;max-width:360px;text-align:center;position:relative}
+.qr-title{font-size:17px;font-weight:700;margin-bottom:6px}
+.qr-desc{font-size:12px;color:var(--muted);margin-bottom:18px}
+.qr-frame{position:relative;width:220px;height:220px;margin:0 auto 14px;border:3px solid var(--blue);border-radius:12px;overflow:hidden;background:#0a0a0a}
+.qr-scan-line{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#0f62fe,transparent);animation:qr-scan 2s linear infinite}
+@keyframes qr-scan{0%{top:0}100%{top:calc(100% - 3px)}}
+.qr-corner{position:absolute;width:20px;height:20px;border-color:var(--blue);border-style:solid}
+.qr-corner.tl{top:6px;left:6px;border-width:3px 0 0 3px}
+.qr-corner.tr{top:6px;right:6px;border-width:3px 3px 0 0}
+.qr-corner.bl{bottom:6px;left:6px;border-width:0 0 3px 3px}
+.qr-corner.br{bottom:6px;right:6px;border-width:0 3px 3px 0}
+.qr-hint{font-size:11px;color:var(--blue);font-weight:600;margin-bottom:8px;animation:pulse 1.5s infinite}
+.qr-note{font-size:10px;color:var(--muted);margin-bottom:16px;background:#f4f4f4;padding:6px 10px;border-radius:4px}
+.qr-close-btn{padding:9px 28px;background:var(--blue);color:#fff;border:none;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer}
 
 /* PAGE TITLE (PC) */
 .page-title{font-size:20px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
@@ -461,6 +480,11 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
         <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.75 10.5h-1.5v-5h1.5v5zm0-6.5h-1.5V3.5h1.5V5z"/></svg>
         <span data-i18n="anon_notice">匿名エリアレベルの共有 — 個人データは収集しません</span>
       </div>
+      <!-- QR CHECK-IN BUTTON -->
+      <div style="margin-bottom:14px">
+        <button class="btn-qr" id="qrOpenBtn" data-i18n="qr_btn">📷 QRコードでチェックイン</button>
+      </div>
+
       <div class="ci-layout">
       <div id="ciForm">
         <div class="steps">
@@ -672,6 +696,47 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
 </nav>
 
 <div class="toast" id="toast"></div>
+
+<!-- QR DEMO MODAL -->
+<div class="qr-ov" id="qrOv">
+  <div class="qr-modal">
+    <div class="qr-title" id="qrTitle">QRコードをスキャン</div>
+    <div class="qr-desc" id="qrDesc">入口のQRコードをカメラに向けてください</div>
+    <div class="qr-frame">
+      <svg width="100%" height="100%" viewBox="0 0 220 220" style="position:absolute;top:0;left:0;opacity:.15">
+        <line x1="0" y1="55" x2="220" y2="55" stroke="#fff" stroke-width=".5"/>
+        <line x1="0" y1="110" x2="220" y2="110" stroke="#fff" stroke-width=".5"/>
+        <line x1="0" y1="165" x2="220" y2="165" stroke="#fff" stroke-width=".5"/>
+        <line x1="55" y1="0" x2="55" y2="220" stroke="#fff" stroke-width=".5"/>
+        <line x1="110" y1="0" x2="110" y2="220" stroke="#fff" stroke-width=".5"/>
+        <line x1="165" y1="0" x2="165" y2="220" stroke="#fff" stroke-width=".5"/>
+      </svg>
+      <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.7">
+        <rect x="2" y="2" width="50" height="50" rx="4" fill="none" stroke="#0f62fe" stroke-width="5"/>
+        <rect x="10" y="10" width="34" height="34" rx="2" fill="#0f62fe" opacity=".8"/>
+        <rect x="68" y="2" width="50" height="50" rx="4" fill="none" stroke="#0f62fe" stroke-width="5"/>
+        <rect x="76" y="10" width="34" height="34" rx="2" fill="#0f62fe" opacity=".8"/>
+        <rect x="2" y="68" width="50" height="50" rx="4" fill="none" stroke="#0f62fe" stroke-width="5"/>
+        <rect x="10" y="76" width="34" height="34" rx="2" fill="#0f62fe" opacity=".8"/>
+        <rect x="68" y="68" width="14" height="14" fill="#0f62fe" opacity=".7"/>
+        <rect x="86" y="68" width="14" height="14" fill="#0f62fe" opacity=".7"/>
+        <rect x="104" y="68" width="14" height="14" fill="#0f62fe" opacity=".7"/>
+        <rect x="68" y="86" width="14" height="14" fill="#0f62fe" opacity=".7"/>
+        <rect x="86" y="104" width="14" height="14" fill="#0f62fe" opacity=".7"/>
+        <rect x="104" y="104" width="14" height="14" fill="#0f62fe" opacity=".7"/>
+      </svg>
+      <div class="qr-corner tl"></div>
+      <div class="qr-corner tr"></div>
+      <div class="qr-corner bl"></div>
+      <div class="qr-corner br"></div>
+      <div class="qr-scan-line"></div>
+    </div>
+    <div class="qr-hint" id="qrHint">スキャン中...</div>
+    <div class="qr-note" id="qrNote">※ デモ表示です。実際のスキャン機能はありません。</div>
+    <button class="qr-close-btn" id="qrCloseBtn">閉じる</button>
+  </div>
+</div>
+
 <div class="modal-ov" id="mOv">
   <div class="modal">
     <div class="mhandle"></div>
@@ -763,6 +828,14 @@ const I18N = {
     vacancy:"空席率",
     conf_high:"信頼度: 高", conf_medium:"信頼度: 中", conf_low:"信頼度: 低",
     updated:"更新: ", legend_title:"凡例",
+    svg_core:"セントラルコア", svg_core_sub:"コア",
+    svg_not_to_scale:"縮尺非対応",
+    qr_btn:"📷 QRコードでチェックイン",
+    qr_modal_title:"QRコードをスキャン",
+    qr_modal_desc:"入口のQRコードをカメラに向けてください",
+    qr_scan_hint:"スキャン中...",
+    qr_demo_note:"※ デモ表示です。実際のスキャン機能はありません。",
+    qr_close:"閉じる",
     status_available:"空きあり", status_moderate:"やや混雑", status_busy:"混雑",
     status_almostfull:"ほぼ満席", status_unknown:"不明",
     ovlabel_relaxed:"余裕あり", ovlabel_moderate:"やや混雑", ovlabel_busy:"混雑", ovlabel_packed:"満席に近い",
@@ -865,6 +938,14 @@ const I18N = {
     ovlabel_relaxed:"Relaxed", ovlabel_moderate:"Moderate", ovlabel_busy:"Busy", ovlabel_packed:"Packed",
     ov_sub:"{pct}% of areas available · {n} areas Available",
     top_desc:"{pct}% vacancy · {conf} · Updated {upd}",
+    svg_core:"Central Core", svg_core_sub:"Core",
+    svg_not_to_scale:"Not to scale",
+    qr_btn:"📷 Check In via QR Code",
+    qr_modal_title:"Scan QR Code",
+    qr_modal_desc:"Point your camera at the QR code at the entrance",
+    qr_scan_hint:"Scanning...",
+    qr_demo_note:"※ Demo display only. QR scanning is not functional.",
+    qr_close:"Close",
     pts_leaving_soon:"Leaving Soon",
     sidebar_sub:"Hakodate Office 17F–25F",
     ci_type_monitor:"Monitor seat", ci_type_quiet:"Quiet seat",
@@ -920,6 +1001,9 @@ function applyI18n(){
     const v=I18N[lang][opt.dataset.i18n]||I18N.ja[opt.dataset.i18n];
     if(v!==undefined) opt.textContent=v;
   });
+  // ciArea の初期optionテキストを言語に合わせて更新
+  const ca=document.getElementById("ciArea");
+  if(ca && ca.options[0] && ca.options[0].value==="") ca.options[0].textContent=t("ci_select_area_first");
   renderHome(); renderMap();
 }
 function setLang(l){ lang=l; applyI18n(); }
@@ -1359,14 +1443,14 @@ function renderMap(){
     const W=layout.W, H=layout.H;
     let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;font-family:-apple-system,sans-serif">
     <rect x="2" y="2" width="${W-4}" height="${H-4}" rx="10" fill="#eef2f7" stroke="#c8d0dc" stroke-width="1.5"/>
-    <text x="${W/2}" y="12" text-anchor="middle" font-size="8.5" fill="#8d8d8d" font-weight="700">${floor.id} — ${floorDisplayTheme(floor)} (Not to scale)</text>`;
+    <text x="${W/2}" y="12" text-anchor="middle" font-size="8.5" fill="#8d8d8d" font-weight="700">${floor.id} — ${floorDisplayTheme(floor)} (${t("svg_not_to_scale")})</text>`;
 
     // Central Core
     if(layout.core){
       const c=layout.core;
       svg+=`<rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="4" fill="#dde2ea" stroke="#b0bac6" stroke-width="1"/>
-      <text x="${c.x+c.w/2}" y="${c.y+14}" text-anchor="middle" font-size="9" fill="#525252" font-weight="600">${c.label}</text>
-      <text x="${c.x+c.w/2}" y="${c.y+26}" text-anchor="middle" font-size="8" fill="#8d8d8d">Core</text>`;
+      <text x="${c.x+c.w/2}" y="${c.y+14}" text-anchor="middle" font-size="9" fill="#525252" font-weight="600">${t("svg_core")}</text>
+      <text x="${c.x+c.w/2}" y="${c.y+26}" text-anchor="middle" font-size="8" fill="#8d8d8d">${t("svg_core_sub")}</text>`;
     }
 
     // エリアゾーン
@@ -1377,7 +1461,7 @@ function renderMap(){
       svg=drawAreaZone(svg, z, a, sm, a.id===topId, topId);
     });
 
-    svg+=`<text x="${W-4}" y="${H-4}" font-size="7" fill="#c0c8d4" text-anchor="end">App illustration — not to scale</text>`;
+    svg+=`<text x="${W-4}" y="${H-4}" font-size="7" fill="#c0c8d4" text-anchor="end">${t("svg_not_to_scale")}</text>`;
     svg+=`</svg>`;
 
     document.getElementById("mapSVGWrap").innerHTML=svg;
@@ -1605,7 +1689,9 @@ function runRec(){
       <span class="badge ${as.bc}">${stLabel(s.a.st)}</span>
     </div>`;
   }).join("");
-  document.getElementById("recOut").style.display="block";
+  const ro=document.getElementById("recOut");
+  ro.style.display="block";
+  ro.dataset.hasResult="1";
 }
 
 // ═══════════════════════════════════════
@@ -1656,6 +1742,21 @@ document.querySelectorAll("[data-lang]").forEach(b=>{
 document.getElementById("mlJP").addEventListener("click",()=>setLang("ja"));
 document.getElementById("mlEN").addEventListener("click",()=>setLang("en"));
 bindFloorCBs();
+
+// ── QR DEMO MODAL ──────────────────────────────────────────────────────────
+function openQR(){
+  // i18n更新
+  document.getElementById("qrTitle").textContent=t("qr_modal_title");
+  document.getElementById("qrDesc").textContent=t("qr_modal_desc");
+  document.getElementById("qrHint").textContent=t("qr_scan_hint");
+  document.getElementById("qrNote").textContent=t("qr_demo_note");
+  document.getElementById("qrCloseBtn").textContent=t("qr_close");
+  document.getElementById("qrOv").classList.add("open");
+}
+function closeQR(){ document.getElementById("qrOv").classList.remove("open"); }
+document.getElementById("qrOpenBtn").addEventListener("click", openQR);
+document.getElementById("qrCloseBtn").addEventListener("click", closeQR);
+document.getElementById("qrOv").addEventListener("click", e=>{ if(e.target===document.getElementById("qrOv")) closeQR(); });
 
 // ═══════════════════════════════════════
 //  INIT
