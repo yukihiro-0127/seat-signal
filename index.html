@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Seat Signal — Hakodate Office</title>
+<title>Find my seat — Hakodate Office</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f4;color:#161616;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent}
@@ -330,7 +330,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
   <div class="sidebar-logo" id="sidebarLogo" style="cursor:pointer" title="Home">
     <h1>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      <span class="nav-label">Seat Signal</span>
+      <span class="nav-label">Find my seat</span>
     </h1>
     <p id="sidebarSub">Hakodate Office 17F–25F</p>
   </div>
@@ -386,7 +386,7 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
   <div class="mobile-header">
     <h1 id="mobileLogoBtn" style="cursor:pointer">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      Seat Signal
+      Find my seat
     </h1>
     <div class="mobile-header-right">
       <div style="display:flex;align-items:center;gap:6px">
@@ -614,6 +614,10 @@ body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f4f4f
             <small id="ciActiveSub"></small>
           </div>
         </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+          <span id="ciActiveType" style="display:inline-flex;align-items:center;gap:4px;background:var(--blue-bg);color:var(--blue-dark);border:1px solid var(--blue);border-radius:4px;padding:3px 8px;font-size:12px;font-weight:600"></span>
+          <span id="ciActivePower" style="display:none;align-items:center;gap:4px;background:#fff8e1;color:#7c6000;border:1px solid #f0c040;border-radius:4px;padding:3px 8px;font-size:12px;font-weight:600">⚡ <span data-i18n="ci_type_power">電源あり</span></span>
+        </div>
         <div class="card">
           <div class="card-title" data-i18n="ci_status_update">ステータス更新</div>
           <div class="toggle-row">
@@ -832,6 +836,8 @@ const I18N = {
     ci_do_checkin:"チェックイン ✓  +5pt",
     ci_status_update:"ステータス更新",
     ci_share_leaving:"離席予告を共有  +3pt",
+    ci_active_detail_type:"席タイプ",
+    ci_type_any_label:"指定なし",
     ci_report_title:"現在の混雑状況を報告",
     ci_report_busy:"🔴 混んできた  +3pt",
     ci_report_free:"🟢 空いてきた  +3pt",
@@ -1013,6 +1019,8 @@ const I18N = {
     rec_reason_upd:"Last updated {upd} ({conf})",
     rec_reason_reports:"{n} recent reports — reliable data",
     rec_reason_high:"High floor ({floor}) — great view",
+    ci_active_detail_type:"Seat type",
+    ci_type_any_label:"Any",
   }
 };
 
@@ -1030,7 +1038,7 @@ function applyI18n(){
   });
   document.getElementById("htmlRoot").lang=lang;
   // <title> を切替
-  document.title = lang==="ja" ? "Seat Signal — 箱崎事業所" : "Seat Signal — Hakodate Office";
+  document.title = lang==="ja" ? "Find my seat — 箱崎事業所" : "Find my seat — Hakodate Office";
   // placeholder
   const rq=document.getElementById("recQ");
   if(rq) rq.placeholder=t("find_placeholder");
@@ -1717,6 +1725,16 @@ function updateCIUI(){
   if(state.checkedIn){
     document.getElementById("ciActiveLabel").textContent=state.ciFloor+" · "+state.ciArea;
     document.getElementById("ciActiveSub").textContent=t("ci_active_sub",{n:state.ciDur});
+    // 席タイプバッジ
+    const typeEl=document.getElementById("ciActiveType");
+    const typeKey=state.ciType&&state.ciType!=="any"?("ci_type_"+state.ciType.toLowerCase().replace(/[^a-z]/g,"_").replace(/_+/g,"_").replace(/_$/,"")):"ci_type_any_label";
+    const typeMap={"Monitor":"ci_type_monitor","Quiet":"ci_type_quiet","Team-friendly":"ci_type_team",
+      "Short stay":"ci_type_short","Standing desk":"ci_type_standing","Phone booth":"ci_type_phone"};
+    const typeLabel=state.ciType&&state.ciType!=="any"?(t(typeMap[state.ciType])||state.ciType):t("ci_type_any_label");
+    typeEl.textContent="🪑 "+typeLabel;
+    // 電源バッジ
+    const pwEl=document.getElementById("ciActivePower");
+    pwEl.style.display=state.ciPower?"inline-flex":"none";
   }
 }
 
